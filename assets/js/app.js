@@ -8,12 +8,12 @@
  */
 
 
-(function (io) {
+ (function (io) {
 
-  // as soon as this file is loaded, connect automatically, 
+  // as soon as this file is loaded, connect automatically,
   var socket = io.connect();
   if (typeof console !== 'undefined') {
-    log('Connecting to Sails.js...');
+  	log('Connecting to Sails.js...');
   }
 
   socket.on('connect', function socketConnected() {
@@ -26,27 +26,27 @@
       // to run when a new message arrives from the Sails.js
       // server.
       ///////////////////////////////////////////////////////////
-      log('New comet message received :: ', message);
+      // log('New comet message received :: ', message);
       //////////////////////////////////////////////////////
 
-    });
+  });
 
 
     ///////////////////////////////////////////////////////////
     // Here's where you'll want to add any custom logic for
-    // when the browser establishes its socket connection to 
+    // when the browser establishes its socket connection to
     // the Sails.js server.
     ///////////////////////////////////////////////////////////
     log(
-        'Socket is now connected and globally accessible as `socket`.\n' + 
-        'e.g. to send a GET request to Sails, try \n' + 
-        '`socket.get("/", function (response) ' +
-        '{ console.log(response); })`'
+    	'Socket is now connected and globally accessible as `socket`.\n' +
+    	'e.g. to send a GET request to Sails, try \n' +
+    	'`socket.get("/", function (response) ' +
+    		'{ console.log(response); })`'
     );
     ///////////////////////////////////////////////////////////
 
 
-  });
+});
 
 
   // Expose connected `socket` instance globally so that it's easy
@@ -56,11 +56,11 @@
 
   // Simple log function to keep the example simple
   function log () {
-    if (typeof console !== 'undefined') {
-      console.log.apply(console, arguments);
-    }
+  	if (typeof console !== 'undefined') {
+  		console.log.apply(console, arguments);
+  	}
   }
-  
+
 
 })(
 
@@ -68,69 +68,124 @@
   // you can replace `window.io` with your own `io` here:
   window.io
 
-);
+  );
 
 (function($){
-    console.log('jquery');
+	//testing area//
+	var btn = $("#createRoomButton");
 
-    var btn = $("#createRoomButton");
+	btn.on('click', function() {
+		socket.post('/GameRoom/create',
+			{},
+			function(res) {
+				console.log("create room response: ", res);
+			});
+	});
 
-    btn.on('click', function() {
-        socket.post('/GameRoom/create',
-            {},
-            function(res) {
-                console.log("create room res");
-                console.log(res);
-            });
-    });
+	var playerId = getRandomInt(1, 100000);
+	$('#playerName').text(playerId);
 
-    subscribeGameRoomList();
-    function subscribeGameRoomList() {
-        socket.get('/GameRoom',
-            "",
-            function (res) {
-                console.log("Subscribed Game Room Message");
-                console.log(res);
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
 
-                $.each(res, function() {
-                    addGameRoomToList(this);
-                });
-            });
+	//end of testing area//
+
+	subscribeGameRoomList();
+	function subscribeGameRoomList() {
+		socket.get('/GameRoom',
+			"",
+			function (res) {
+				console.log("Subscribed Game Room Message: ", res);
+
+				$.each(res, function() {
+					addGameRoomToList(this);
+				});
+			});
+	}
+
+	initSocketListen();
+	function initSocketListen(){
+		socket.on('message', function(res) {
+			if(res.model == 'gameroom') {
+				if(res.verb == 'create') {
+					console.log("Game Room List Received");
+
+					var room = res.data;
+
+					addGameRoomToList(room);
+				}
+			}
+
+			if(res.model == 'gameroom' && res.verb == 'update') {
+				console.log('room message: ', res, res.data);
+
+				updateRoomInfo(res.data.room);
+			}
+		});
+	};
+
+	function addGameRoomToList(room) {
+		var listItem = $('<li/>', {
+			id: 'gameroom' + room.id,
+			html: 'Game Room' + room.id
+		});
+
+		var button = $("<button>Join</button>");
+		button.on('click', function() {
+			socket.post('/GameRoom/join/' + room.id,
+				{ playerId: playerId },
+				function(res) {
+					if(res.error) {
+						console.log(res.error);
+					} else {
+						console.log("Join Game Room response: ", res);
+
+						joinGameRoom(res);
+					}
+				});
+		});
+
+		listItem.append(button);
+
+		$("#gameRoomList").append(listItem);
+	}
+
+	function joinGameRoom(room) {
+		var gameroom = $("#gameRoom").removeClass('hide');
+
+		$("#gameRoomName").text('Room ' + room.id);
+
+		updateRoomInfo(room);
+
+        //leave button
+        $('#gameRoomExitBtn').on('click', function(e) {
+        	socket.post('/GameRoom/leave/' + room.id,
+        		{ playerId: playerId },
+	        	function(res) {
+	        		if(res.error) {
+	        			console.log(res.error);
+	        		}
+
+	        		$(e.target).off('click');
+	        		gameroom.addClass('hide');
+	        	}
+        	);
+
+        });
     }
 
-    renewGameRoomList();
-    function renewGameRoomList(){
-        socket.on('message', function(res) {
-            console.log("New Game Room Message Received");
+    function updateRoomInfo(room) {
+    	var players = JSON.parse(room.players);
 
-            if(res.model == 'gameroom') {
-                if(res.verb == 'create') {
-                    var room = res.data;
+    	var i;
+    	for(i = 0; i < players.length; i++) {
+    		$('#gameRoomPlayer' + (i + 1) + ' p').text(players[i]);
+    	}
 
-                    addGameRoomToList(room);
-                }
-            }
-        });
-    };
-    
-    function addGameRoomToList(room) {
-        var listItem = $('<li/>', {
-            id: 'gameroom' + room.id,
-            html: 'Game Room' + room.id
-        });
-
-        var button = $("<button>Join</button>");
-        button.on('click', function() {
-            socket.get('/GameRoom/join',
-                { roomid: room.id }, 
-                function(res) {
-                    console.log("Join Game Room response");
-                    console.log(res);
-                });
-        });
-
-        listItem.append(button);
-
-        $("#gameRoomList").append(listItem);
+    	for(; i < 5; i++) {
+    		$('#gameRoomPlayer' + (i + 1) + ' p').text("");
+    	}
     }
+
 })(jQuery);

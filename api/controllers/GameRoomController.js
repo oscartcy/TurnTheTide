@@ -15,60 +15,130 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
-module.exports = {
+ module.exports = {
 
-    create: function(req, res) {                                                                        
-                console.log("In GameRoom create");                                                      
-                GameRoom.create({
-                    players: "[]"
-                }).done(function(err, room) {                                                           
-                    GameRoom.publishCreate({
-                        id: room.id,
-                        players: room.players                                                           
-                    }); 
+ 	create: function(req, res) {
+ 		console.log("In GameRoom create");
+ 		GameRoom.create({
+ 			players: "[]"
+ 		}).done(function(err, room) {
+ 			GameRoom.publishCreate({
+ 				id: room.id,
+ 				players: room.players
+ 			});
 
-                    if(err){                                                                            
-                        return res.json(err);                                                           
-                    }   
-                    else {                                                                              
-                        return res.json(room);                                                          
+ 			if(err){
+ 				return res.json(err);
+ 			}
+ 			else {
+ 				return res.json(room);
                         //return res.view({rooms: room});
-                    }   
-                }); 
-            },
+                    }
+                });
+ 	},
 
-    index: function(req, res) {                                                                         
-               console.log("In GameRoom index");                                                        
-               GameRoom.subscribe(req.socket);
-               GameRoom.find()
-                   .done(function(err, rooms) {                                                         
-                       res.json('rooms', rooms);                                                        
-                   }); 
-           }, 
+ 	index: function(req, res) {
+ 		console.log("In GameRoom index");
+ 		GameRoom.subscribe(req.socket);
+ 		GameRoom.find()
+ 		.done(function(err, rooms) {
+ 			res.json('rooms', rooms);
+ 		});
+ 	},
 
-    join: function(req, res) {
-              var roomid = req.param('roomid');
+ 	join: function(req, res) {
+ 		var roomid = req.param('id');
+ 		var playerId = req.param('playerId');
 
-              if(roomid) {
-                  GameRoom.findOne(roomid)
-                      .done(function(err, room) {
-                          GameRoom.subscribe(req.socket, room);
-                          GameRoom.publishUpdate(roomid, {players: "abc"});
+ 		if(! (roomid && playerId))
+ 			return res.json({ error: "no room info received"});
 
-                          if(err) {
-                              return res.json({ error: err});
-                          } else {
-                              return res.json('room', room);
-                          }
-                      });
-              } else {
-                  return res.json({ error: "no room info received"});
-              }},
+		GameRoom.findOne(roomid).done(findRoomCallback);
+
+		function findRoomCallback(err, room) {
+			if(err)
+				return res.json({ error: err});
+
+			//update room player list
+			var players = JSON.parse(room.players);
+
+			if(players.indexOf(playerId) != -1)
+				return res.json({ error: 'already in room'});
+
+			players.push(playerId);
+			room.players = JSON.stringify(players);
+
+			room.save(function(err) {
+				if(err) {
+					console.log(err);
+					return res.json({ error: err});
+				}
+				
+				GameRoom.subscribe(req.socket, room);
+				GameRoom.publishUpdate(roomid, { room: room });
+
+				return res.json('room', room);
+			});
+		}
+ 	},
+
+ 	leave: function(req, res) {
+ 		var roomid = req.param('id');
+ 		var playerId = req.param('playerId');
+
+ 		if(!(roomid && playerId))
+ 			return res.json({ error: "no room info received"});
+
+ 		GameRoom.findOne(roomid).done(findRoomCallback);
+
+ 		function findRoomCallback(err, room) {
+ 			if(err)
+ 				return res.json({ error: err });
+
+ 			var players = JSON.parse(room.players);
+
+ 			var index = players.indexOf(playerId);
+ 			if(index == -1)
+ 				return res.json({ error: 'not in room'});
+
+ 			players.splice( index, 1 );
+ 			room.players = JSON.stringify(players);
+
+ 			room.save(function(err) {
+ 				if(err) {
+ 					console.log(err);
+ 					return res.json({ error: err});
+ 				}
+
+				GameRoom.unsubscribe(req.socket, room);
+				GameRoom.publishUpdate(roomid, { room: room});
+
+				return res.json('room', room); 							
+ 			});
+ 		}
+ 	},
+
+ 	start: function(req, res) {
+ 		var roomid = req.param('id');
+
+ 		if(roomid) {
+ 			GameRoom.findOne(roomid)
+ 			.done(function(err, room) {
+ 				if(err) {
+ 					return res.json({ error: err });
+ 				} else {
+
+ 				}
+ 			});
+ 		} else {
+ 			return res.json({ error: "no room info received"});
+ 		}
+ 	},
     /**
      * Overrides for the settings in `config/controllers.js`
      * (specific to GameRoomController)
      */
-    _config: {}
+     _config: {}
 
 
-};
+ };
