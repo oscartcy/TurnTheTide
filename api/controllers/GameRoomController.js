@@ -18,23 +18,26 @@
  module.exports = {
 
  	create: function(req, res) {
+ 		var size = req.param('size');
+
+ 		if(!size)
+ 			return res.json({ error: 'Room size missing' });
+
  		console.log("In GameRoom create");
  		GameRoom.create({
- 			players: "[]"
+ 			players: "[]",
+ 			size: size
  		}).done(function(err, room) {
+ 			if(err)
+ 				return res.json({ error: err});
+
  			GameRoom.publishCreate({
  				id: room.id,
- 				players: room.players
+ 				room: room
  			});
-
- 			if(err){
- 				return res.json(err);
- 			}
- 			else {
- 				return res.json(room);
-                        //return res.view({rooms: room});
-                    }
-                });
+ 			
+ 			return res.json(room);
+ 		});
  	},
 
  	index: function(req, res) {
@@ -53,18 +56,21 @@
  		if(! (roomid && playerId))
  			return res.json({ error: "no room info received"});
 
-		GameRoom.findOne(roomid).done(findRoomCallback);
+ 		GameRoom.findOne(roomid).done(findRoomCallback);
 
-		function findRoomCallback(err, room) {
-			if(err)
-				return res.json({ error: err});
+ 		function findRoomCallback(err, room) {
+ 			if(err)
+ 				return res.json({ error: err});
+
+ 			var players = JSON.parse(room.players);
+
+ 			if(players.indexOf(playerId) != -1)
+ 				return res.json({ error: 'already in room'});
+
+ 			if(players.length >= room.size)
+ 				return res.json({ error: 'room is full'});
 
 			//update room player list
-			var players = JSON.parse(room.players);
-
-			if(players.indexOf(playerId) != -1)
-				return res.json({ error: 'already in room'});
-
 			players.push(playerId);
 			room.players = JSON.stringify(players);
 
@@ -73,67 +79,92 @@
 					console.log(err);
 					return res.json({ error: err});
 				}
-				
+
 				GameRoom.subscribe(req.socket, room);
 				GameRoom.publishUpdate(roomid, { room: room });
+
+				if(players.length == room.size)
+					fireReadyToStart(room);
 
 				return res.json('room', room);
 			});
 		}
- 	},
 
- 	leave: function(req, res) {
- 		var roomid = req.param('id');
- 		var playerId = req.param('playerId');
+		function fireReadyToStart(room) {
+			// GameRoom.publish(req, [{ id: room.id }], { status: 'ready' });
 
- 		if(!(roomid && playerId))
- 			return res.json({ error: "no room info received"});
+			var sockets = GameRoom.subscribers(room.id);
 
- 		GameRoom.findOne(roomid).done(findRoomCallback);
+			for(var i in sockets) {
+				var socket = sockets[i];
+				var players = JSON.parse(room.players);
 
- 		function findRoomCallback(err, room) {
- 			if(err)
- 				return res.json({ error: err });
+				socket.emit('gameRoom', { status: 'ready', roomMaster: players[0] });
+			}
+		}
+	},
 
- 			var players = JSON.parse(room.players);
+	leave: function(req, res) {
+		var roomid = req.param('id');
+		var playerId = req.param('playerId');
 
- 			var index = players.indexOf(playerId);
- 			if(index == -1)
- 				return res.json({ error: 'not in room'});
+		if(!(roomid && playerId))
+			return res.json({ error: "no room info received"});
 
- 			players.splice( index, 1 );
- 			room.players = JSON.stringify(players);
+		GameRoom.findOne(roomid).done(findRoomCallback);
 
- 			room.save(function(err) {
- 				if(err) {
- 					console.log(err);
- 					return res.json({ error: err});
- 				}
+		function findRoomCallback(err, room) {
+			if(err)
+				return res.json({ error: err });
+
+			var players = JSON.parse(room.players);
+
+			var index = players.indexOf(playerId);
+			if(index == -1)
+				return res.json({ error: 'not in room'});
+
+			players.splice( index, 1 );
+			room.players = JSON.stringify(players);
+
+			room.save(function(err) {
+				if(err) {
+					console.log(err);
+					return res.json({ error: err});
+				}
 
 				GameRoom.unsubscribe(req.socket, room);
 				GameRoom.publishUpdate(roomid, { room: room});
 
 				return res.json('room', room); 							
- 			});
- 		}
- 	},
+			});
+		}
+	},
 
- 	start: function(req, res) {
- 		var roomid = req.param('id');
+	start: function(req, res) {
+		var roomid = req.param('id');
 
- 		if(roomid) {
- 			GameRoom.findOne(roomid)
- 			.done(function(err, room) {
- 				if(err) {
- 					return res.json({ error: err });
- 				} else {
+		if(!roomid)
+			return res.json({ error: "no room info received"});
 
- 				}
- 			});
- 		} else {
- 			return res.json({ error: "no room info received"});
- 		}
- 	},
+		GameRoom.findOne(roomid)
+		.done(function(err, room) {
+			if(err)
+				return res.json({ error: err });
+
+			var players = JSON.parse(room.players);
+
+			if(players.length != room.size)
+				return res.json({ error: 'room not full yet' });
+
+			var sockets = GameRoom.subscribers(room.id);
+
+			for(var i in sockets) {
+				var socket = sockets[i];
+
+				socket.emit('gameRoom', { status: 'start', room: room });
+			}
+		});
+	},
     /**
      * Overrides for the settings in `config/controllers.js`
      * (specific to GameRoomController)

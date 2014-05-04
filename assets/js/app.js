@@ -75,8 +75,10 @@
 	var btn = $("#createRoomButton");
 
 	btn.on('click', function() {
+		var size = $("#gameRoomSize").val();
+
 		socket.post('/GameRoom/create',
-			{},
+			{size: size},
 			function(res) {
 				console.log("create room response: ", res);
 			});
@@ -118,9 +120,23 @@
 			}
 
 			if(res.model == 'gameroom' && res.verb == 'update') {
-				console.log('room message: ', res, res.data);
+				console.log('room message: ', res, res.data.room);
 
 				updateRoomInfo(res.data.room);
+			}
+		});
+
+		socket.on('gameRoom', function(res) {
+			console.log('game room status:', res);
+
+			if(res.status == 'ready') {
+				gameRoomReady(res.roomMaster);
+			}
+
+			if(res.status == 'start') {
+				console.log('game start:', res);
+
+				startGame(res.room);
 			}
 		});
 	};
@@ -156,36 +172,80 @@
 
 		$("#gameRoomName").text('Room ' + room.id);
 
+		$("#gameRoomStartBtn").prop("disabled", true);
+
 		updateRoomInfo(room);
+
+		//start button
+		$("#gameRoomStartBtn").on('click', function(e) {
+			$(e.target).off('click');
+			$(e.target).prop('disabled', true);
+
+			socket.post('/GameRoom/start/' + room.id, 
+				{},
+				function(res) {
+					if(res.error)
+						console.log(res.error);
+				});
+		});
 
         //leave button
         $('#gameRoomExitBtn').on('click', function(e) {
+        	$(e.target).off('click');
+        	gameroom.addClass('hide');
+
         	socket.post('/GameRoom/leave/' + room.id,
         		{ playerId: playerId },
-	        	function(res) {
-	        		if(res.error) {
-	        			console.log(res.error);
-	        		}
-
-	        		$(e.target).off('click');
-	        		gameroom.addClass('hide');
-	        	}
-        	);
-
+        		function(res) {
+        			if(res.error) {
+        				console.log(res.error);
+        			}
+        		});
         });
     }
 
     function updateRoomInfo(room) {
     	var players = JSON.parse(room.players);
+    	var size = room.size;
+
+    	$("#gameRoomCount").text("{0} / {1}".format(players.length, size));
 
     	var i;
     	for(i = 0; i < players.length; i++) {
-    		$('#gameRoomPlayer' + (i + 1) + ' p').text(players[i]);
+    		var playerDiv = $('#gameRoomPlayer' + (i + 1));
+    		playerDiv.find('p').text(players[i]);
     	}
 
     	for(; i < 5; i++) {
-    		$('#gameRoomPlayer' + (i + 1) + ' p').text("");
+    		var playerDiv = $('#gameRoomPlayer' + (i + 1));
+    		playerDiv.find('p').text("");
     	}
     }
 
+    function gameRoomReady(roomMaster) {
+    	if(roomMaster == playerId)
+    		$("#gameRoomStartBtn").prop('disabled', false);
+    }
+
+    function startGame(room) {
+    	socket.post('/Game/start/' + room.id, 
+    		{}, 
+    		function(res) {
+    			console.log('game started: ', res);
+    		});
+    }
+
 })(jQuery);
+
+//sprintf in js
+if (!String.prototype.format) {
+	String.prototype.format = function() {
+		var args = arguments;
+		return this.replace(/{(\d+)}/g, function(match, number) { 
+			return typeof args[number] != 'undefined'
+			? args[number]
+			: match
+			;
+		});
+	};
+}
