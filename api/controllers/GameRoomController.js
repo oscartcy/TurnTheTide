@@ -23,7 +23,7 @@
  		if(!size)
  			return res.json({ error: 'Room size missing' });
 
- 		console.log("In GameRoom create");
+ 		//console.log("In GameRoom create");
  		GameRoom.create({
  			players: "[]",
  			size: size
@@ -35,13 +35,20 @@
  				id: room.id,
  				room: room
  			});
+
+ 			var sockets = GameRoom.subscribers(room.id);
+
+ 			for(var i in sockets) {
+ 				var socket = sockets[i];
+ 				GameRoom.unsubscribe(socket, [{ id: room.id}]);
+ 			}
  			
  			return res.json(room);
  		});
  	},
 
  	index: function(req, res) {
- 		console.log("In GameRoom index");
+ 		//console.log("In GameRoom index");
  		GameRoom.subscribe(req.socket);
  		GameRoom.find()
  		.done(function(err, rooms) {
@@ -76,7 +83,7 @@
 
 			room.save(function(err) {
 				if(err) {
-					console.log(err);
+					//console.log(err);
 					return res.json({ error: err});
 				}
 
@@ -128,7 +135,7 @@
 
 			room.save(function(err) {
 				if(err) {
-					console.log(err);
+					//console.log(err);
 					return res.json({ error: err});
 				}
 
@@ -163,6 +170,44 @@
 
 				socket.emit('gameRoom', { status: 'start', room: room });
 			}
+		});
+	},
+
+	destroy: function(req, res) {
+		var roomid = req.param('id');
+
+		if(!roomid)
+			return res.json({ error: "no room info received"});
+
+		GameRoom.findOne(roomid)
+		.done(function(err, room) {
+			if(err)
+				return res.json({ error: err });
+
+			if(!room)
+				return res.json({ error: 'room not found'});
+
+			room.destroy(function(err) {
+				if(err)
+					return res.json({ error: err});
+
+				// GameRoom.publishDestroy(room.id);
+	 			var sockets = GameRoom.subscribers();
+
+	 			for(var i in sockets) {
+	 				var socket = sockets[i];
+	 				socket.emit('message', { model: 'gameroom', verb: 'destroy', id: room.id});
+	 			}
+
+			});
+
+			// var sockets = GameRoom.subscribers(room.id);
+
+			// for(var i in sockets) {
+			// 	var socket = sockets[i];
+
+			// 	socket.emit('gameRoom', { status: 'start', room: room });
+			// }
 		});
 	},
     /**

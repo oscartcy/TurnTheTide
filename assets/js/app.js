@@ -93,25 +93,30 @@
 
 	//end of testing area//
 
-	subscribeGameRoomList();
-	function subscribeGameRoomList() {
+	//main//
+	refreshGameRoomList();
+	initSocketListen();
+	//end of main
+
+	function refreshGameRoomList() {
 		socket.get('/GameRoom',
 			"",
 			function (res) {
-				console.log("Subscribed Game Room Message: ", res);
+				console.log("gameroom list", res);
+
+				$("#gameRoomList").empty();
 
 				$.each(res, function() {
 					addGameRoomToList(this);
 				});
 			});
 	}
-
-	initSocketListen();
+	
 	function initSocketListen(){
 		socket.on('message', function(res) {
 			if(res.model == 'gameroom') {
 				if(res.verb == 'create') {
-					console.log("Game Room List Received");
+					console.log("some gameroom created", res);
 
 					var room = res.data;
 
@@ -123,6 +128,12 @@
 				console.log('room message: ', res, res.data.room);
 
 				updateRoomInfo(res.data.room);
+			}
+
+			if(res.model == 'gameroom' && res.verb == 'destroy') {
+				console.log('some gameroom destroy', res);
+
+				refreshGameRoomList();
 			}
 		});
 
@@ -187,6 +198,11 @@
 					if(res.error)
 						console.log(res.error);
 				});
+
+			socket.delete('/GameRoom/' + room.id,
+				function(res) {
+					console.log('room deleted: ', res);
+				})
 		});
 
         //leave button
@@ -233,6 +249,8 @@
     		function(res) {
     			console.log('game started: ', res);
     		});
+
+    	$("#gameRoom").addClass('hide');
     }
 
 })(jQuery);
