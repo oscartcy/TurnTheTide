@@ -31,16 +31,24 @@
  			if(err)
  				return res.json({ error: err});
 
- 			GameRoom.publishCreate({
- 				id: room.id,
- 				room: room
- 			});
+ 			//GameRoom.publishCreate({
+ 			//	id: room.id,
+ 			//	room: room
+ 			//});
 
- 			var sockets = GameRoom.subscribers(room.id);
+ 			var sockets = GameRoom.subscribers();
 
  			for(var i in sockets) {
  				var socket = sockets[i];
- 				GameRoom.unsubscribe(socket, [{ id: room.id}]);
+ 				//GameRoom.unsubscribe(socket, [{ id: room.id}]);
+
+                socket.emit('message',
+                    {
+                        model: 'gameroom',
+                        verb: 'create',
+                        data: room,
+                        id: room.id
+                    });
  			}
  			
  			return res.json(room);
@@ -200,16 +208,112 @@
 	 			}
 
 			});
-
-			// var sockets = GameRoom.subscribers(room.id);
-
-			// for(var i in sockets) {
-			// 	var socket = sockets[i];
-
-			// 	socket.emit('gameRoom', { status: 'start', room: room });
-			// }
 		});
 	},
+
+    match: function(req, res) {
+        var playerId = req.param('playerId');
+
+        if(!playerId)
+            return res.json({ error: 'no player id provided' });
+
+        var roomid = -1;
+
+        GameRoom.find().done(function(err, rooms) {
+            if(err)
+                return res.json({ error: err });
+
+            //if have rooms, search for empty room first
+            if(rooms) {
+                for(var i in rooms) {
+                    var room = rooms[i];
+                    var currentSize = JSON.parse(room.players).length;
+
+                    if(currentSize < room.size) {
+                        roomid = room.id;
+                        break;
+                    }
+                }
+            }
+
+            //if still don't have room, create one
+            if(roomid == -1) {
+                GameRoom.create({
+                    players: "[]",
+                    size: 5 
+                }).done(function(err, room) {
+                    if(err)
+                        return res.json({ error: err});
+
+                    var sockets = GameRoom.subscribers();
+
+                    for(var i in sockets) {
+                        var socket = sockets[i];
+                        //GameRoom.unsubscribe(socket, [{ id: room.id}]);
+
+                        socket.emit('message',
+                            {
+                                model: 'gameroom',
+                                verb: 'create',
+                                data: room,
+                                id: room.id
+                            }
+                        );
+                    }
+
+                    roomid = room.id;
+                });
+            }
+        });
+
+        //join room
+ 		GameRoom.findOne(roomid).done(findRoomCallback);
+
+ 		function findRoomCallback(err, room) {
+ 			if(err)
+ 				return res.json({ error: err});
+
+ 			var players = JSON.parse(room.players);
+
+ 			if(players.indexOf(playerId) != -1)
+ 				return res.json({ error: 'already in room'});
+
+ 			if(players.length >= room.size)
+ 				return res.json({ error: 'room is full'});
+
+			//update room player list
+			players.push(playerId);
+			room.players = JSON.stringify(players);
+
+			room.save(function(err) {
+				if(err) {
+					//console.log(err);
+					return res.json({ error: err});
+				}
+
+				GameRoom.subscribe(req.socket, room);
+				GameRoom.publishUpdate(roomid, { room: room });
+
+				if(players.length == room.size)
+					fireReadyToStart(room);
+
+				return res.json('room', room);
+			});
+		}
+
+		function fireReadyToStart(room) {
+			// GameRoom.publish(req, [{ id: room.id }], { status: 'ready' });
+
+			var sockets = GameRoom.subscribers(room.id);
+
+			for(var i in sockets) {
+				var socket = sockets[i];
+				var players = JSON.parse(room.players);
+
+				socket.emit('gameRoom', { status: 'ready', roomMaster: players[0] });
+			}
+		}
+    },
     /**
      * Overrides for the settings in `config/controllers.js`
      * (specific to GameRoomController)

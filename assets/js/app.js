@@ -84,6 +84,25 @@
 			});
 	});
 
+    var matchBtn = $("#matchButton");
+
+    matchBtn.on('click', function() {
+        matchRoom();
+    });
+
+    function matchRoom() {
+        socket.post('/GameRoom/match',
+            { playerId: playerId },
+            function(res) {
+                console.log("Match Game Room response: ", res);
+
+                if(res.error)
+                    console.log(res);
+                else
+                    joinGameRoom(res);
+            });
+    }
+
 	var playerId = getRandomInt(1, 100000);
 	$('#playerName').text(playerId);
 
