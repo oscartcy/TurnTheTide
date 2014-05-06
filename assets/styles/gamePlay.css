@@ -1,0 +1,245 @@
+#GamePlaying
+{
+	position:absolute;
+	top:120px;
+	width:800px;
+	height:600px;
+	border:solid 1px;
+}
+
+#center
+{
+	position:absolute;
+	top:30%;
+	left:37%;
+
+	width:200px;
+	height:100px;
+	
+}
+
+#center>.tidecard1
+{
+	position:absolute;
+	top:10%;
+	left:20%;
+}
+
+#center>.tidecard2
+{
+	position:absolute;
+	top:10%;
+	right:20%;
+}
+.tidecard
+{
+	width:40px;
+	height:70px;
+	border:solid 1px;
+}
+
+.weathercard
+{
+	width:40px;
+	height:70px;
+	border:solid 1px;
+}
+
+.otherPlayer
+{
+
+	width:35%;
+	height:20%;
+
+}
+
+
+.profile
+{
+	width:60px;
+	height:60px;
+	border:solid 1px;
+}
+
+.myprofile
+{
+	width:90px;
+	height:90px;
+	border:solid 1px;
+}
+
+.playerLeft>.name
+{
+	position:absolute;
+	bottom:-10%;
+	left:10%;
+	display:inline;
+}
+
+.playerLeft>.mark
+{
+	position:absolute;
+	bottom:-10%;
+	left:40%;
+	display:inline;
+}
+
+.playerLeft>.life
+{
+	position:absolute;
+	bottom:-10%;
+	left:70%;
+	display:inline;
+}
+
+.playerLeft>.profile
+{
+	position:absolute;
+	top:15%;
+	left:10%;
+}
+.playerLeft>.tidecard
+{
+	position:absolute;
+	top:10%;
+	left:40%;
+}
+
+.playerLeft>.weathercard
+{
+	position:absolute;
+	top:10%;
+	left:70%;
+}
+
+.pos1
+{
+	position:absolute;
+	left:0%;
+	top:30%;
+}
+
+.pos2
+{
+	position:absolute;
+	right:0%;
+	top:30%;
+}
+
+.pos3
+{
+	position:absolute;
+	left:260px;
+	top:20px;
+}
+
+.pos4
+{
+	position:absolute;
+	right:50px;
+	top: 20px;
+}
+
+.hide
+{
+	display:none !important;
+}
+
+#userPlayer
+{
+	position:absolute;
+	width:800px;
+	height:250px;
+	bottom:2%;
+
+	
+}
+
+#userPlayer>.cycle
+{
+	position:absolute;
+	top:60%;
+	left:2%;
+}
+
+#userPlayer>.round
+{
+	position:absolute;
+	top:75%;
+	left:2%;
+	
+}
+
+#userPlayer>.life
+{
+	position:absolute;
+	left:2%;
+	top:10%;
+}
+
+#userPlayer>.tidecard
+{
+	position:absolute;
+	left:40%;
+	
+}
+
+
+#userPlayer>.weathercard
+{
+	position:absolute;
+	left:55%;	
+}
+
+#userPlayer>.myprofile
+{
+	position:absolute;
+	left:82%;
+	top:10%;
+
+}
+
+
+	
+#userPlayer>.mark
+{
+	position:absolute;
+	left:80%;
+	top:60%;
+	
+}
+
+#userPlayer>.userName
+{
+	position:absolute;
+	left:80%;
+	top:50%;
+	
+}
+
+#userPlayer>.hand
+{
+	position:absolute;
+	width:400px;
+	height:160px;
+	left:25%;
+	bottom:2%;
+
+
+}
+
+.hand>.row1
+{
+
+}
+
+.row>.weathercard
+{
+	display: inline-block;
+	margin-left: 20px;
+	margin-bottom:20px;
+}
+.hand>.row2
+{
+
+}

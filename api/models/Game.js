@@ -13,6 +13,14 @@ module.exports = {
   	/* e.g.
   	nickname: 'string'
   	*/
+	playerNumber:'integer',
+	round:'integer',
+	cycle:'integer',
+	players:'json',
+	currentTides:'array',
+	remainingTides:'array',
+	alive:'integer',
+	numOfReady:'integer'
     
   }
 
