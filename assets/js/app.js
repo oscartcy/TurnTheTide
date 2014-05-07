@@ -218,10 +218,10 @@
 						console.log(res.error);
 				});
 
-			socket.delete('/GameRoom/' + room.id,
-				function(res) {
-					console.log('room deleted: ', res);
-				})
+//			socket.delete('/GameRoom/' + room.id,
+//				function(res) {
+//					console.log('room deleted: ', res);
+//				})
 		});
 
         //leave button
