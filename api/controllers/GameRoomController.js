@@ -169,15 +169,18 @@
 			var players = JSON.parse(room.players);
 
 			if(players.length != room.size)
-				return res.json({ error: 'room not full yet' });
+				return res.json({ error: 'room not full yet' ,status:"fail"});
+			else
+				return res.json({status:"success"})
+			
 
-			var sockets = GameRoom.subscribers(room.id);
+			// var sockets = GameRoom.subscribers(room.id);
 
-			for(var i in sockets) {
-				var socket = sockets[i];
+			// for(var i in sockets) {
+				// var socket = sockets[i];
 
-				socket.emit('gameRoom', { status: 'start', room: room });
-			}
+				// socket.emit('gameRoom', { status: 'start', room: room });
+			// }
 		});
 	},
 
