@@ -264,7 +264,7 @@
 
     function startGame(room) {
     	socket.post('/Game/start/' + room.id, 
-    		{}, 
+    		{ room: room, playerId: playerId  }, 
     		function(res) {
     			console.log('game started: ', res);
     		});
