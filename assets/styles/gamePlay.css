@@ -22,27 +22,34 @@
 {
 	position:absolute;
 	top:10%;
-	left:20%;
+	left:5%;
 }
 
 #center>.tidecard2
 {
 	position:absolute;
 	top:10%;
-	right:20%;
+	right:5%;
 }
 .tidecard
 {
-	width:40px;
-	height:70px;
-	border:solid 1px;
+	width:60px;
+	height:100px;
+	/*border:solid 1px;*/
 }
 
 .weathercard
 {
-	width:40px;
-	height:70px;
-	border:solid 1px;
+	width:60px;
+	height:100px;
+	/*border:solid 1px;*/
+}
+
+.lifeguard
+{
+	width:20px;
+	height:20px;
+	margin-left: 5px;
 }
 
 .otherPlayer
@@ -87,8 +94,8 @@
 .playerLeft>.life
 {
 	position:absolute;
-	bottom:-10%;
-	left:70%;
+	bottom:-25%;
+	left:8%;
 	display:inline;
 }
 
@@ -101,14 +108,14 @@
 .playerLeft>.tidecard
 {
 	position:absolute;
-	top:10%;
+	top:-13%;
 	left:40%;
 }
 
 .playerLeft>.weathercard
 {
 	position:absolute;
-	top:10%;
+	top:-13%;
 	left:70%;
 }
 
@@ -158,14 +165,14 @@
 #userPlayer>.cycle
 {
 	position:absolute;
-	top:60%;
+	top:25%;
 	left:2%;
 }
 
 #userPlayer>.round
 {
 	position:absolute;
-	top:75%;
+	top:40%;
 	left:2%;
 	
 }
@@ -194,8 +201,8 @@
 #userPlayer>.myprofile
 {
 	position:absolute;
-	left:82%;
-	top:10%;
+	left:75%;
+	top:0%;
 
 }
 
@@ -204,26 +211,26 @@
 #userPlayer>.mark
 {
 	position:absolute;
-	left:80%;
-	top:60%;
+	left:85%;
+	top:35%;
 	
 }
 
 #userPlayer>.userName
 {
 	position:absolute;
-	left:80%;
-	top:50%;
+	left:70%;
+	top:35%;
 	
 }
 
 #userPlayer>.hand
 {
 	position:absolute;
-	width:400px;
-	height:160px;
-	left:25%;
-	bottom:2%;
+	width:800px;
+	height:100px;
+	left:6px;
+	bottom:0%;
 
 
 }
@@ -236,8 +243,8 @@
 .row>.weathercard
 {
 	display: inline-block;
-	margin-left: 20px;
-	margin-bottom:20px;
+	margin-left: 5px;
+	margin-bottom:10px;
 }
 .hand>.row2
 {
