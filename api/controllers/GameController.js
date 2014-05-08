@@ -18,17 +18,6 @@
 //
 module.exports = {
 	create: function(req, res) {                                                                        
-
-				// var number=5;
-				
-				// var playername=new Array();
-				// playername.push("Jackie");
-				// playername.push("Ken");
-				// playername.push("Oscar");
-				// playername.push("Felix");
-				// playername.push("Mole");
-				
-				// var playerJSON=generatePlayerInfo(playername);
 				var roomid = req.param('roomid');
 				GameRoom.findOne(roomid).done(function (err, room) {
 					var number=room.size;
@@ -42,6 +31,11 @@ module.exports = {
 					
 					var curTides=new Array();
 					var remTides=new Array();
+					var roundcards=new Array(number);
+					for (var i=0;i<number;i++)
+					{
+						roundcards[i]=0;
+					}
 					generateTides(curTides,remTides);
 					
 					Game.create({
@@ -52,27 +46,156 @@ module.exports = {
 						currentTides:curTides,
 						remainingTides:remTides,
 						alive:number,
-						numOfReady:0
+						numOfReady:0,
+						roundCards:roundcards,
+						playerPos:playername
 					}).done(function(err, game) {  
 						var sockets = GameRoom.subscribers(room.id);
+						console.log(game);
 
 						for(var i in sockets) {
 							var socket = sockets[i];
 
 							socket.emit('game', { status: 'gameCreated', game: game });
-						}				
-						// Game.publishCreate({id: game.id, game: game}); 
-						// console.log(game);
-						// if(err){                                                                            
-							// return res.json(err);                                                           
-						// }   
-						// else {                                                                              
-							// return res.json(game);                                                          
-
-						// }   
+						}				  
 					}); 
 				});
-            },
+            },			
+	playhand:function(req,res){
+			var roomid = req.param('id');
+			var playerId = req.param('playerId');
+			var card=req.param('card');
+			card=parseInt(card);
+			var thisPlayer;
+			
+			if(! (roomid && playerId))
+				return res.json({ error: "no room info received"});
+
+			Game.findOne(roomid).done(findRoomCallback);
+			function findRoomCallback(err, room) {
+				if(err)
+					return res.json({ error: err});
+					
+				room.numOfReady=room.numOfReady+1;
+				for (var i=0;i<room.playerNumber;i++)
+				{
+					if (room.playerPos[i]==playerId)
+						room.roundCards[i]=card;
+				}
+				room.save(function(err) {
+						if(err) {
+							console.log(err);
+							return res.json({ error: err});
+				}});
+				var channel=req.param('channelId');					
+				var sockets = GameRoom.subscribers(channel);
+				for(var i in sockets) {
+					var socket = sockets[i];
+					socket.emit('game', { status: 'handReady', playerId: playerId });
+				}
+				console.log(room.alive);
+				console.log(room.roundCards);
+				console.log(room.numOfReady);
+				
+				// or time out?
+				//checkIfAllPplhandedIn
+				if (room.numOfReady==room.alive)
+				{
+	
+					var endCycFlag=false;
+					result=computeRound(room);
+					room.numOfReady=0;
+					for (var i=0;i<room.playerNumber;i++)
+					{
+						room.roundCards[i]=-1;
+					}
+					room.save(function(err) {
+							if(err) {
+								console.log(err);
+								return res.json({ error: err});
+					}});
+					//checkIfEndCycle
+					endCycFlag=checkEndCycle(room);
+					for(var i in sockets) {
+						var socket = sockets[i];
+						socket.emit('game', { status: 'endRound', round: result ,endCycle:endCycFlag});
+					}
+					
+					if (endCycFlag)
+					{
+						extraresult=setNextCycle(room);
+						room.save(function(err) {
+							if(err) {
+								console.log(err);
+								return res.json({ error: err});
+							}});
+						for(var i in sockets) {
+							var socket = sockets[i];
+							socket.emit('game', { status: 'endCycle', cycle:extraresult});
+						}										
+					}
+				}
+				
+				// var players=JSON.parse(room.players);
+				//need to push cards in correct sequence
+				// for (var i=0;i<players.length;i++)
+				// {
+					// if (players[i].RemainingLife!=-1)
+					// {
+						// if (players[i].Name==playerId)
+						// {
+							// thisPlayer=players[i];
+							// if (!validateHand(thisPlayer,card))
+							// {
+									// otherCards.push(randomCard(thisPlayer));
+							// }
+							// else
+							// {
+								// otherCards.push(card);
+							// }
+						// }
+						// else
+							// otherCards.push(randomCard(players[i]));
+					// }
+					// else
+					// {
+						// otherCards.push(-1);
+					// }
+				// }
+				
+				
+				//one hand out ends
+				
+				//when all hand in cards
+				// var result;
+				// var extraresult;
+				// result=computeRound(otherCards,room);
+				//check END CYCLE
+				// if (!checkEndCycle(room))
+				// {		
+					// room.save(function(err) {
+						// if(err) {
+							// console.log(err);
+							// return res.json({ error: err});
+						// }});
+					
+					 // return res.json({round:result});
+				 // }
+				 // else
+				 // {
+					// console.log("here");
+					// extraresult=setNextCycle(room);
+					// room.save(function(err) {
+						// if(err) {
+							// console.log(err);
+							// return res.json({ error: err});
+						// }});
+					// return res.json({cycle:extraresult,round:result})
+				 // }
+				
+			
+			}
+		},
    _config: {}
 
 
@@ -172,7 +295,6 @@ function checkEndCycle(room)
 {
 	if (room.round==13 || room.alive<=2)
 	{
-		console.log(room.round);
 		return true;
 	}
 	else
@@ -229,7 +351,7 @@ function setNextCycle(room)
 	
 }
 
-function computeRound(thisRoundCard,room)
+function computeRound(room)
 {
 	var result=new Object();
 	result.player=new Array();
@@ -240,6 +362,8 @@ function computeRound(thisRoundCard,room)
 	result.fieldtide=new Array();
 	
 	var players=JSON.parse(room.players);
+	
+	var thisRoundCard=room.roundCards;
 	var sorted = thisRoundCard.slice();
 	console.log("This Round Card "+thisRoundCard);
 	sorted.sort(function compareNumbers(a, b) {
@@ -249,32 +373,44 @@ function computeRound(thisRoundCard,room)
 		return a - b;
 	});
 	//distribute tides
-	for (var k=0;k<thisRoundCard.length;k++)
-	{
+	var endthisflag=false;
+	var k=0;
+	// for (var k=0;k<thisRoundCard.length;k++)
+	// {
 		for (var i=0;i<players.length;i++)
 		{
-			for (var j=0;j<players[i].RemainingHands.length;j++)
+			if (players[i].RemainingLife!=-1)
 			{
-				if (players[i].RemainingLife!=-1)
+				for (var j=0;j<players[i].RemainingHands.length;j++)
 				{
-					if (players[i].RemainingHands[j]==thisRoundCard[k])
-						{
-							result.playerHand.push(thisRoundCard[k]);
-							players[i].RemainingHands.splice(j,1);
-							if (thisRoundCard[k]==sorted[0])
-							{
-								players[i].Tide=room.currentTides[0];
+					for (var k=0;k<thisRoundCard.length;k++)
+					{
+						if (players[i].RemainingHands[j]==thisRoundCard[k])
+							{								
+								result.playerHand.push(thisRoundCard[k]);
+								players[i].RemainingHands.splice(j,1);
+								if (thisRoundCard[k]==sorted[0])
+								{
+									players[i].Tide=room.currentTides[0];
+									
+								}
+								else if (thisRoundCard[k]==sorted[1])
+								{
+									players[i].Tide=room.currentTides[1];
+								}
 								
 							}
-							else if (thisRoundCard[k]==sorted[1])
-								players[i].Tide=room.currentTides[1];
-						}
+					}
 				}
-				else
-					result.playerHand.push(-1);
 			}
+			else
+			{
+				result.playerHand.push(-1);
+				endthisflag=true;
+
+			}		
 		}
-	}
+	// }
 	
 
 	//regen tides

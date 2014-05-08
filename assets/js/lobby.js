@@ -1,5 +1,7 @@
 //generate player id
 var playerId = getRandomInt(1, 100000);
+var currentRoomID;
+var	gameID;
 $('#playerName').text(playerId);
 
 function getRandomInt(min, max) {
@@ -89,6 +91,7 @@ function getRandomInt(min, max) {
 
 			if(res.status == 'ready') {
 				gameRoomReady(res.roomMaster);
+
 			}
 		});
 		
@@ -98,6 +101,19 @@ function getRandomInt(min, max) {
 
 			if(res.status == 'gameCreated') {
 					 setUpGame(res.game);
+			}
+			
+			if (res.status=='handReady'){
+				setPlayerReady(res.playerId);		
+			}
+			
+			if (res.status=='endRound')
+			{
+				console.log(res.round);
+				//false= this player not dead
+				if (!displayEndTurn(res.round,res.endCycle))
+					setHandListener(gameID);
+				
 			}
 		});
 	};
@@ -136,7 +152,7 @@ function getRandomInt(min, max) {
 		$("#gameRoomStartBtn").prop("disabled", true);
 
 		updateRoomInfo(room);
-
+		currentRoomID=room.id;
 		//start button
 		$("#gameRoomStartBtn").on('click', function(e) {
 			$(e.target).off('click');

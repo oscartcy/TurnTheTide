@@ -20,7 +20,9 @@ module.exports = {
 	currentTides:'array',
 	remainingTides:'array',
 	alive:'integer',
-	numOfReady:'integer'
+	numOfReady:'integer',
+	roundCards:'array',
+	playerPos:'array'
     
   }
 

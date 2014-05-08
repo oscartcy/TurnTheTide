@@ -1,5 +1,6 @@
 function setUpGame(info)
 {
+	gameID=info.id;
 	$("#main").addClass("hide");
 	$("#GamePlaying").removeClass("hide");
 	var players=JSON.parse(info.players);
@@ -45,29 +46,37 @@ function setHandListener(id)
 				{ 
 				  playerId: playerId,
 				  card:$(this).text(),
+				  channelId:currentRoomID
 				},
 				function(res){ 
 							//false= this player not dead
-								if (typeof  res.cycle == 'undefined')
-								{
-									if (!displayEndTurn(res.round,true))
-										setHandListener(id);
-								}
-								else
-								{
-									console.log(res.cycle);
-									displayEndTurn(res.round,false);
-									setTimeout(function() {
-										showNewRound(res.cycle);
-									}, 2000);
+								// if (typeof  res.cycle == 'undefined')
+								// {
+									// if (!displayEndTurn(res.round,true))
+										// setHandListener(id);
+								// }
+								// else
+								// {
+									// console.log(res.cycle);
+									// displayEndTurn(res.round,false);
+									// setTimeout(function() {
+										// showNewRound(res.cycle);
+									// }, 2000);
 									
-								}
+								// }
 							});
 			$(this).remove();
 		});
 	});
 }
 
+
+
+function setPlayerReady(playerId)
+{
+	if ($("#"+playerId+">.weathercard").length!=0)
+		$("#"+playerId+">.weathercard").text("Ready");
+}
 function unsetHandListener()
 {
 	$(".hand").find(".weathercard").each(function()
@@ -194,38 +203,61 @@ function setMyself(me)
 function displayEndTurn(res,endCycleFlag)
 {
 	var flag;
-	if (endCycleFlag)
+	if (!endCycleFlag)
 		setTides(res.fieldtide);
-	setPlayerTide(res.player,res.tide);
-	setPlayerCard(res.player,res.playerHand);
+	setPlayerTide(res.player,res.tide,res.remaininglife);
+	setPlayerCard(res.player,res.playerHand,res.remaininglife);
 	flag=setPlayerLife(res.player,res.remaininglife,res.life);
-	if (endCycleFlag)
+	if (!endCycleFlag)
 		setRound(res.round);
 	return flag;
 }
 
 
-function setPlayerTide(player,tide)
+function setPlayerTide(player,tide,rem)
 {
 	for (var i=0;i<player.length;i++)
 	{
-		if (tide[i]!=0)
-			$("#"+player[i]+">.tidecard").text(tide[i]);
-	
-		if ($("#"+player[i]).length==0)
+		if (rem[i]==-1)
+		{
+			$("#"+player[i]+">.tidecard").text("Dead Already");
+			
+			if ($("#"+player[i]).length==0)
+			{
+				$("#userPlayer>.tidecard").text("Dead Already");
+			}
+		}
+		else
 		{
 			if (tide[i]!=0)
-				$("#userPlayer>.tidecard").text(tide[i]);
+				$("#"+player[i]+">.tidecard").text(tide[i]);
+					
+			if ($("#"+player[i]).length==0)
+			{
+				if (tide[i]!=0)
+					$("#userPlayer>.tidecard").text(tide[i]);
+			}
 		}
 	}
 }
 
-function setPlayerCard(player,playerHand)
+function setPlayerCard(player,playerHand,rem)
 {
 	for (var i=0;i<player.length;i++)
 	{
-		if(playerHand[i]!=-1)
+		if (rem[i]==-1)
 		{
+			//set animation first card,then death
+			$("#"+player[i]+">.weathercard").text("Dead Already");
+			
+			if ($("#"+player[i]).length==0)
+			{
+				$("#userPlayer>.weathercard").text("Dead Already");
+			}
+		} 
+		else if(playerHand[i]!=-1)
+		{
+			
 			$("#"+player[i]+">.weathercard").text(playerHand[i]);
 		
 			if ($("#"+player[i]).length==0)
@@ -233,8 +265,6 @@ function setPlayerCard(player,playerHand)
 					$("#userPlayer>.weathercard").text(playerHand[i]);
 			}
 		}
-		else
-			$("#"+player[i]+">.weathercard").text("Dead");
 	}
 }
 
