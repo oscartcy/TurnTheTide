@@ -75,13 +75,36 @@
 	var btn = $("#createRoomButton");
 
 	btn.on('click', function() {
-		var size = $("#gameRoomSize").val();
-
-		socket.post('/GameRoom/create',
+		var gameRoomSelection = $("#gameRoomSelection").removeClass();
+		var block = $("#block").removeClass('block');
+		
+		//create room start button
+		var createRoomStartBtn = $("#createRoomStartBtn");
+		createRoomStartBtn.on('click',function(){
+			var size = $("#gameRoomSize").val();
+			var gameRoomSelection = $("#gameRoomSelection").addClass('block');
+			var block = $("#block").addClass('block');
+			socket.post('/GameRoom/create',
 			{size: size},
 			function(res) {
 				console.log("create room response: ", res);
 			});
+			
+		});
+		
+		//create room leave button
+        $('#createRoomExitBtn').on('click', function(e) {
+        	var gameRoomSelection = $("#gameRoomSelection").addClass('block');
+			var block = $("#block").addClass('block');
+        	socket.post('/GameRoom/leave/' + room.id,
+        		{ playerId: playerId },
+        		function(res) {
+        			if(res.error) {
+        				console.log(res.error);
+        			}
+        		});
+        });
+		
 	});
 
     var matchBtn = $("#matchButton");
@@ -172,13 +195,31 @@
 	};
 
 	function addGameRoomToList(room) {
-		var listItem = $('<li/>', {
+		/*var listItem = $('<li/>', {
 			id: 'gameroom' + room.id,
 			html: 'Game Room' + room.id
 		});
-
-		var button = $("<button>Join</button>");
-		button.on('click', function() {
+		
+		
+		var tr = $("<tr><td>"+ "<img src=/images/gameroom.jpg style=\"width:80px;height:50px;\">" + '<br>Game Room' + room.id + "</td></tr>",{
+			id: 'gameroom' + room.id
+		});*/
+		
+		var row_div_1 =$('<div/>',{
+			id: 'gameroom' + room.id,
+			class: 'row rm_row'
+		});
+		
+		var gameRoomName=$('<div/>',{
+			class: 'column_5'
+		});
+		gameRoomName.append("<h6 class=\"color theme text bold\">Game Room</h6>");
+		
+		var join_button_div=$('<div/>',{
+			class:'column_2',
+		});
+		var join_button = $("<button class=\"button success small\">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>");
+		join_button.on('click', function() {
 			socket.post('/GameRoom/join/' + room.id,
 				{ playerId: playerId },
 				function(res) {
@@ -191,14 +232,75 @@
 					}
 				});
 		});
+		join_button_div.append(join_button);
+		row_div_1.append(gameRoomName);
+		row_div_1.append(join_button_div);
+		
+		var row_div_2 =$('<div/>',{
+			class: 'row rm_row'
+		});
+		var player_div_1=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_1.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_2=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_2.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_3=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_3.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_4=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_4.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_5=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_5.append("<img src=\"/images/profile.jpg\">");
+		
+		
+		
+		var spec_button_div=$('<div/>',{
+			class:'column_2',
+		});
+		var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
+		spec_button.on('click', function() {
+			/*
+			socket.post('/GameRoom/join/' + room.id,
+				{ playerId: playerId },
+				function(res) {
+					if(res.error) {
+						console.log(res.error);
+					} else {
+						console.log("Join Game Room response: ", res);
 
-		listItem.append(button);
+						joinGameRoom(res);
+					}
+				});*/
+		});
+		spec_button_div.append(spec_button);
 
-		$("#gameRoomList").append(listItem);
+		row_div_2.append(player_div_1);
+		row_div_2.append(player_div_2);
+		row_div_2.append(player_div_3);
+		row_div_2.append(player_div_4);
+		row_div_2.append(player_div_5);
+		row_div_2.append(spec_button_div);
+
+		$("#gameRoomList").append(row_div_1);
+		$("#gameRoomList").append(row_div_2);
+		$("#gameRoomList").append("<br><br>");
 	}
 
 	function joinGameRoom(room) {
 		var gameroom = $("#gameRoom").removeClass('hide');
+		var block = $("#block").removeClass('block');
 
 		$("#gameRoomName").text('Room ' + room.id);
 
@@ -228,6 +330,7 @@
         $('#gameRoomExitBtn').on('click', function(e) {
         	$(e.target).off('click');
         	gameroom.addClass('hide');
+			block.addClass('block');
 
         	socket.post('/GameRoom/leave/' + room.id,
         		{ playerId: playerId },
@@ -238,6 +341,10 @@
         		});
         });
     }
+	
+	function updateRankTable(){
+	
+	}
 
     function updateRoomInfo(room) {
     	var players = JSON.parse(room.players);

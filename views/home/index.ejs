@@ -1,46 +1,125 @@
-<div id="main">
-	<h1>Hello World</h1>
-	<p id='playerName'></p>
-	<button id="createRoomButton">Create Room</button>
-    <button id="matchButton">Match</button>
-
-	<select id="gameRoomSize">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-	</select>
-
-	<ul id="gameRoomList">
-	</ul>
-
-	<div id="gameRoom" class="hide">
-		<p id="gameRoomName">Room 1</p>
-		<p id="gameRoomCount">4/5</p>
-		<div id="gameRoomPlayer1" class="gameRoomPlayer">
-			<img src="images/user.gif" />
-			<p id="playerName">Player</p>
+<div class="row margin-bottom">
+	<div class="column_4 radius bck light padding-top padding-bottom row2">
+	
+		<div class="pro_file_div">
+			<img src="/images/profile.jpg" class="pro_pic">
 		</div>
-		<div id="gameRoomPlayer2" class="gameRoomPlayer">
-			<img src="images/user.gif" />
-			<p id="playerName">Player</p>
+		<div class="pro_name">
+			<h6 class="color normal text bold">Name</h6>
+			<h6 class="color normal text bold">Score</h6>
 		</div>
-		<div id="gameRoomPlayer3" class="gameRoomPlayer">
-			<img src="images/user.gif" />
-			<p id="playerName">Player</p>
-		</div>
-		<div id="gameRoomPlayer4" class="gameRoomPlayer">
-			<img src="images/user.gif" />
-			<p id="playerName">Player</p>
-		</div>
-		<div id="gameRoomPlayer5" class="gameRoomPlayer">
-			<img src="images/user.gif" />
-			<p id="playerName">Player</p>
-		</div>
-		<div id="gameRoomButtonGroup">
-			<button id="gameRoomStartBtn">Start</button>
-			<button id="gameRoomExitBtn">Leave</button>
+		
+		<br><br><br>
+		
+		<div class="margin-top" style="height:408px;">
+			<button id="matchButton" data-tuktuk-modal="big_modal" class="match_btn">Match</button><br><br><br>
+			<button id="createRoomButton" data-tuktuk-modal="big_modal" class="cre_rm_btn">Create Room</button>
 		</div>
 	</div>
+	
+	<div class="column_8 radius bck light padding-top padding-bottom row2">
+		<div>
+			<form id="searchbox" action="">
+				<input id="search" type="text" placeholder="Type here">
+				<input id="submit" type="submit" value="Search">
+			</form>
+		</div>
+		<div id="gameRoomList">
+			<div class="row rm_row">
+				<div class="column_5"><h6>GameRoomName</h6></div>
+				<div class="column_2"><button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button></div>
+			</div>
+			<br>
+			<div class="row rm_row">
+				<div class="column_1"><img src="/images/profile.jpg"></div>
+				<div class="column_1"><img src="/images/profile.jpg"></div>
+				<div class="column_1"><img src="/images/profile.jpg"></div>
+				<div class="column_1"><img src="/images/profile.jpg"></div>
+				<div class="column_1"><img src="/images/profile.jpg"></div>
+				<div class="column_2"><button class="button small spec_btn_move">Spectate</button></div>	
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<div class="row row3">
+	<div id="ranking" class="column_12 radius bck light padding-top padding-bottom row3">
+		<div id="rank_table" class="row">
+			<div class="empty_div"></div>
+			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+			<div class="empty_div"></div>
+			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+			<div class="empty_div"></div>
+			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+			<div class="empty_div"></div>
+			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+			<div class="empty_div"></div>
+			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+			<div class="empty_div"></div>
+			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+		</div>
+	</div>
+</div>
+
+<div id="block" class="block">
+</div>
+
+<div id="gameRoom" class="hide">
+	<p id="gameRoomName">Room 1</p>
+	<p id="gameRoomCount">4/5</p>
+	<div id="gameRoomPlayer1" class="gameRoomPlayer">
+		<img src="images/user.gif" />
+		<p id="playerName">Player</p>
+	</div>
+	<div id="gameRoomPlayer2" class="gameRoomPlayer">
+		<img src="images/user.gif" />
+		<p id="playerName">Player</p>
+	</div>
+	<div id="gameRoomPlayer3" class="gameRoomPlayer">
+		<img src="images/user.gif" />
+		<p id="playerName">Player</p>
+	</div>
+	<div id="gameRoomPlayer4" class="gameRoomPlayer">
+		<img src="images/user.gif" />
+		<p id="playerName">Player</p>
+	</div>
+	<div id="gameRoomPlayer5" class="gameRoomPlayer">
+		<img src="images/user.gif" />
+		<p id="playerName">Player</p>
+	</div>
+	<div id="gameRoomButtonGroup">
+		<button id="gameRoomStartBtn">Start</button>
+		<button id="gameRoomExitBtn">Leave</button>
+	</div>
+</div>
+
+<div id="gameRoomSelection" class="block">
+		<form id="form" name="form" class="margin-top">
+			<fieldset class="createRmfield">
+				<label>Size:<small>required</small></label>
+				<span class="select">
+					<select id="gameRoomSize">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+				</span>
+			</fieldset>
+			<br>
+			<fieldset class="createRmfield">
+				<label>Name:<small>required</small></label>
+				<input type="text" name="name" id="name">
+			</fieldset>
+			<br>
+			<fieldset>
+				<div id="createRoomButtonGroup">
+					<button id="createRoomStartBtn">Create</button>
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					<button id="createRoomExitBtn">Leave</button>
+				</div>
+			</fieldset>
+		</form>
 </div>
