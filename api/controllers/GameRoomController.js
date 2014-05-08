@@ -24,6 +24,9 @@
  		if(!size)
  			return res.json({ error: 'Room size missing' });
 
+        if(!name || name == "")
+            name = "Game Room";
+
  		//console.log("In GameRoom create");
  		GameRoom.create({
  			players: "[]",
