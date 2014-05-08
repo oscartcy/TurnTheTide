@@ -43,9 +43,23 @@ function getRandomInt(min, max) {
 	//end of testing area//
 
 	//main//
+    login();
 	refreshGameRoomList();
 	initSocketListen();
 	//end of main
+
+    function login() {
+        socket.post('/User/login',
+            { fbid: playerId },
+            function(res) {
+                if(res.error)
+                    console.log(res);
+                else {
+                    console.log('user logined:', res.user);
+                    $("#playerScore").text(res.user.score);
+                }
+            });
+    }
 
 	function refreshGameRoomList() {
 		socket.get('/GameRoom',
