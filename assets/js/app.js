@@ -70,7 +70,6 @@
 
   );
 
-
 //sprintf in js
 if (!String.prototype.format) {
 	String.prototype.format = function() {

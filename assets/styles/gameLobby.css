@@ -1,0 +1,198 @@
+.pro_file_div{
+	position:relative;
+	width:150px;
+	height:150px;
+	bottom:9px;
+	left:39px;
+}
+
+.pro_pic{
+	width:150px;
+	height:150px;
+}
+
+.pro_name{
+	position:relative;
+	float:left;
+	left:50px;
+}
+
+.score_div{
+	position:relative;
+	left:10px;
+}
+
+.match_btn{
+	position:relative;
+	left:75px;
+}
+
+.cre_rm_btn{
+	position:relative;
+	left:51px;
+}
+
+.spec_btn_move{
+	position:relative;
+	top:7px;
+}
+
+#gameRoomList{
+	position:relative;
+	top:-140px;
+	height:430px;
+	overflow:auto;
+	overflow-x:hidden;
+}
+
+#ranking{
+	height:110px;
+	width:740px;
+	overflow:auto;
+	overflow-y:hidden;
+}
+
+#ranking img{
+	width:42px;
+	height:42px;
+}
+
+#gameRoomList img{
+	width:42px;
+	height:42px;
+}
+
+#rank_table{
+	position:relative;
+}
+
+.empty_div{
+	width:20px;
+	height:100px;
+	float:left;
+}
+
+.fd_div{
+	float:left;
+}
+
+.rm_row{
+	position:relative;
+	left:25px;
+}
+
+.row2{
+	height:400px;
+}
+
+.row3{
+	height:170px;
+}
+
+#block{
+	position:absolute;
+	height:600px;
+	width:800px;
+	opacity:0.9;
+	background-color:black;
+	top:0px;
+	left:0px;
+}
+
+.block{
+	display:none;
+}
+
+#gameRoomSelection{
+	width:400px;
+	height:190px;
+	background-color:#b0c4de;
+	position:absolute;
+	top:205px;
+	left:200px;
+	border:1px solid black;
+}
+
+.createRmfield{
+	position:relative;
+	left:-20px;
+}
+
+#gamesize_div{
+	position:relative;
+	left:62px;
+}
+
+#createRoomButtonGroup{
+	position:relative;
+	left:97px;
+}
+
+#searchbox{
+	position:relative;
+	top:-100px;
+	background-color: #eaf8fc;
+	background-image: linear-gradient(#fff, #d4e8ec);
+	border-radius: 35px;    
+	border-width: 1px;
+	border-style: solid;
+	border-color: #c4d9df #a4c3ca #83afb7;            
+	width: 484px;
+	height: 50px;
+	padding: 10px;
+	margin: 100px auto 50px;
+	overflow: hidden; /* Clear floats */
+}
+
+#search, 
+#submit {
+    float: left;
+}
+
+#search {
+    padding: 5px 9px;
+    height: 23px;
+    width: 380px;
+    border: 1px solid #a4c3ca;
+    font: normal 13px 'trebuchet MS', arial, helvetica;
+    background: #f1f1f1;
+    border-radius: 50px 3px 3px 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);            
+}
+
+/* ----------------------- */
+
+#submit
+{       
+    background-color: #6cbb6b;
+    background-image: linear-gradient(#95d788, #6cbb6b);
+    border-radius: 3px 50px 50px 3px;    
+    border-width: 1px;
+    border-style: solid;
+    border-color: #7eba7c #578e57 #447d43;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 
+                0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    height: 25px;
+    margin: 0 0 0 10px;
+    padding: 0;
+    width: 60px;
+    cursor: pointer;
+    font: bold 14px Arial, Helvetica;
+    color: #23441e;    
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+
+#submit:hover {       
+    background-color: #95d788;
+    background-image: linear-gradient(#6cbb6b, #95d788);
+}   
+
+#submit:active {       
+    background: #95d788;
+    outline: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;        
+}
+
+#submit::-moz-focus-inner {
+       border: 0;  /* Small centering fix for Firefox */
+}
