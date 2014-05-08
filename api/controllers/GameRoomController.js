@@ -19,6 +19,7 @@
 
  	create: function(req, res) {
  		var size = req.param('size');
+        var name = req.param('name');
 
  		if(!size)
  			return res.json({ error: 'Room size missing' });
@@ -26,21 +27,16 @@
  		//console.log("In GameRoom create");
  		GameRoom.create({
  			players: "[]",
- 			size: size
+ 			size: size,
+            name: name
  		}).done(function(err, room) {
  			if(err)
  				return res.json({ error: err});
-
- 			//GameRoom.publishCreate({
- 			//	id: room.id,
- 			//	room: room
- 			//});
 
  			var sockets = GameRoom.subscribers();
 
  			for(var i in sockets) {
  				var socket = sockets[i];
- 				//GameRoom.unsubscribe(socket, [{ id: room.id}]);
 
                 socket.emit('message',
                     {
@@ -316,6 +312,21 @@
 				socket.emit('gameRoom', { status: 'ready', roomMaster: players[0] });
 			}
 		}
+    },
+
+    search: function(req, res) {
+        var query = req.param('query');
+
+        if(!query)
+            return res.json({ error: "query not provided" });
+
+        GameRoom.findByNameLike(query)
+            .done(function(err, rooms) {
+                if(err)
+                    return res.json({ error: err });
+
+                return res.json({ rooms: rooms });
+            });
     },
     /**
      * Overrides for the settings in `config/controllers.js`

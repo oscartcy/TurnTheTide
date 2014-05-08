@@ -14,9 +14,13 @@ function getRandomInt(min, max) {
 
 	btn.on('click', function() {
 		var size = $("#gameRoomSize").val();
+        var roomName = $("#createRoomName").val() || "";
 
 		socket.post('/GameRoom/create',
-			{size: size},
+			{
+                size: size,
+                name: roomName
+            },
 			function(res) {
 				console.log("create room response: ", res);
 			});
@@ -135,7 +139,8 @@ function getRandomInt(min, max) {
 	function addGameRoomToList(room) {
 		var listItem = $('<li/>', {
 			id: 'gameroom' + room.id,
-			html: 'Game Room' + room.id
+			//html: 'Game Room' + room.id
+            html: room.name
 		});
 
 		var button = $("<button>Join</button>");

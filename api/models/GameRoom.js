@@ -10,7 +10,10 @@ module.exports = {
 
     attributes: {
                     players: 'string',
-                    size: 'integer'
+                    size: 'integer',
+                    name: 'string'
                 }
+
+
 
 };
