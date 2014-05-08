@@ -19,6 +19,10 @@ function setUpGame(info)
 	$("#userPlayer>.cycle").text("Cycle: "+info.cycle);
 	$("#userPlayer>.round").text("Round: "+info.round);
 	$("#userPlayer>.userName").text("Name: "+playerId);
+	var $tide = $('<img class="tidecard" >'); 
+	$tide.attr('src', "/images/card/t_back.jpg");
+	$("#userPlayer").append($tide);
+	
 	setTides(info.currentTides);
 	setMyself(me);
 	setHandListener(info.id);
@@ -39,13 +43,24 @@ function setHandListener(id)
 	{
 		$(this).dblclick(function(e)
 		{
-			console.log($(this).text());
-			$("#userPlayer>.weathercard").text($(this).text());
+			//console.log($(this).text());
+			var path=$(this).prop('src');
+			
+			//$("#userPlayer>.weathercard").text($(this).text());
+			$("#userPlayer>.weathercard").remove();
+			var img = $('<img class="weathercard" >'); 
+			img.attr('src', path);
+			$("#userPlayer").append(img);
+			
+			path=$("#userPlayer>.weathercard").prop('src');
+			numArray=path.match(/(card\/.)(.*)(\.)/);
+			num=parseInt(numArray[2]);
+		//	$("#userPlayer>.weathercard").text($(this).text());
 			unsetHandListener();
 			socket.post('/Game/playhand/' + id,
 				{ 
 				  playerId: playerId,
-				  card:$(this).text(),
+				  card:num,
 				  channelId:currentRoomID
 				},
 				function(res){ 
@@ -74,8 +89,14 @@ function setHandListener(id)
 
 function setPlayerReady(playerId)
 {
-	if ($("#"+playerId+">.weathercard").length!=0)
-		$("#"+playerId+">.weathercard").text("Ready");
+	if ($("#"+playerId).length!=0)
+	{
+		//$("#"+playerId+">.weathercard").text("Ready");
+		
+		var img = $('<img class="weathercard" >'); 
+		img.attr('src', "/images/card/w_back.jpg");
+		$("#"+playerId).append(img);
+	}
 }
 function unsetHandListener()
 {
@@ -87,8 +108,16 @@ function unsetHandListener()
 
 function setTides(tideArray)
 {
-	$("#center>.tidecard1").text(tideArray[0]);
-	$("#center>.tidecard2").text(tideArray[1]);
+	// $("#center>.tidecard1").text(tideArray[0]);
+	// $("#center>.tidecard2").text(tideArray[1]);
+	var img = $('<img class="tidecard1 tidecard" >'); 
+	img.attr('src', "/images/card/t{0}.jpg".format(tideArray[0]));
+	img.appendTo('#center');
+	
+	var img = $('<img class="tidecard2 tidecard" >'); 
+	img.attr('src', "/images/card/t{0}.jpg".format(tideArray[1]));
+	img.appendTo('#center');	
+	
 }
 
 function generatePlayer(player,pos,totalnumber)
@@ -101,15 +130,28 @@ function generatePlayer(player,pos,totalnumber)
 		var $profile=$('<div class="profile"></div>');
 		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
-		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
-		var $tide=$('<div class="tidecard"></div>');
-		var $weather=$('<div class="weathercard"></div>');
+	//	var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
+		var $life=$('<div class="life">');
+		for (var i=0;i<player.Life;i++)
+		{
+			var $lifeguard = $('<img class="lifeguard" >'); 
+			$lifeguard.attr('src', "/images/card/life.png");
+			$life.append($lifeguard);
+		}
+		
+	//	var $tide=$('<div class="tidecard"></div>');
+		var $tide = $('<img class="tidecard" >'); 
+		$tide.attr('src', "/images/card/t_back.jpg");
+
+	//	var $weather=$('<div class="weathercard"></div>');
 		$player.append($name);
 		$player.append($mark);
 		$player.append($life);
 		$player.append($profile);
 		$player.append($tide);
-		$player.append($weather);
+	
+	//	$player.append($weather);
+	
 		$("#GamePlaying").append($player);
 	}
 	if (pos==2)
@@ -119,16 +161,25 @@ function generatePlayer(player,pos,totalnumber)
 		var $profile=$('<div class="profile"></div>');
 		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
-//		var $life=$('<p class="life">Life:{0}</p>'.format(player.Life));
-		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
-		var $tide=$('<div class="tidecard"></div>');
-		var $weather=$('<div class="weathercard"></div>');
+		var $life=$('<div class="life">');
+		for (var i=0;i<player.Life;i++)
+		{
+			var $lifeguard = $('<img class="lifeguard" >'); 
+			$lifeguard.attr('src', "/images/card/life.png");
+			$life.append($lifeguard);
+		}
+//		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
+	//	var $tide=$('<div class="tidecard"></div>');
+		var $tide = $('<img class="tidecard" >'); 
+		$tide.attr('src', "/images/card/t_back.jpg");
+		
+	//	var $weather=$('<div class="weathercard"></div>');
 		$player.append($name);
 		$player.append($mark);
 		$player.append($life);
 		$player.append($profile);
 		$player.append($tide);
-		$player.append($weather);
+	//	$player.append($weather);
 		$("#GamePlaying").append($player);
 	}
 	if (pos==3)
@@ -138,15 +189,25 @@ function generatePlayer(player,pos,totalnumber)
 		var $profile=$('<div class="profile"></div>');
 		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
-		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
-		var $tide=$('<div class="tidecard"></div>');
-		var $weather=$('<div class="weathercard"></div>');
+		var $life=$('<div class="life">');
+		for (var i=0;i<player.Life;i++)
+		{
+			var $lifeguard = $('<img class="lifeguard" >'); 
+			$lifeguard.attr('src', "/images/card/life.png");
+			$life.append($lifeguard);
+		}
+//		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
+//		var $tide=$('<div class="tidecard"></div>');
+		var $tide = $('<img class="tidecard" >'); 
+		$tide.attr('src', "/images/card/t_back.jpg");
+		
+	//	var $weather=$('<div class="weathercard"></div>');
 		$player.append($name);
 		$player.append($mark);
 		$player.append($life);
 		$player.append($profile);
 		$player.append($tide);
-		$player.append($weather);
+	//	$player.append($weather);
 		$("#GamePlaying").append($player);
 		if (totalnumber==5)
 		{
@@ -160,15 +221,25 @@ function generatePlayer(player,pos,totalnumber)
 		var $profile=$('<div class="profile"></div>');
 		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
-		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
-		var $tide=$('<div class="tidecard"></div>');
-		var $weather=$('<div class="weathercard"></div>');
+		var $life=$('<div class="life">');
+		for (var i=0;i<player.Life;i++)
+		{
+			var $lifeguard = $('<img class="lifeguard" >'); 
+			$lifeguard.attr('src', "/images/card/life.png");
+			$life.append($lifeguard);
+		}
+//		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
+//		var $tide=$('<div class="tidecard"></div>');
+		var $tide = $('<img class="tidecard" >'); 
+		$tide.attr('src', "/images/card/t_back.jpg");
+		
+	//	var $weather=$('<div class="weathercard"></div>');
 		$player.append($name);
 		$player.append($mark);
 		$player.append($life);
 		$player.append($profile);
 		$player.append($tide);
-		$player.append($weather);
+	//	$player.append($weather);
 		$("#GamePlaying").append($player);
 
 	}
@@ -181,21 +252,35 @@ function setMyself(me)
 		return a - b;
 	});
 	
-	$("#userPlayer>.life").text("Life: "+me.Life+"/"+me.RemainingLife);
+//	$("#userPlayer>.life").text("Life: "+me.Life+"/"+me.RemainingLife);
+	for (var i=0;i<me.Life;i++)
+	{
+		var $lifeguard = $('<img class="lifeguard" >'); 
+		$lifeguard.attr('src', "/images/card/life.png");
+		$("#userPlayer>.life").append($lifeguard);
+	}
+	
 	$("#userPlayer>.mark").text("Mark: "+me.Mark);
 	for (var i=0;i<me.Hands.length;i++)
 	{
 		if (i<=5)
 		{
-			var $card=$('<div class="weathercard"></div>');
-			$card.text(me.Hands[i]);
-			$(".hand>.row1").append($card);
+			// var $card=$('<div class="weathercard"></div>');
+			// $card.text(me.Hands[i]);
+			// $(".hand>.row1").append($card);
+			
+			var img = $('<img class="weathercard" >'); 
+			img.attr('src', "/images/card/w{0}.jpg".format(me.Hands[i]));
+			$(".hand>.row1").append(img);
 		}
 		else
 		{
-			var $card=$('<div class="weathercard"></div>');
-			$card.text(me.Hands[i]);
-			$(".hand>.row2").append($card);
+			// var $card=$('<div class="weathercard"></div>');
+			// $card.text(me.Hands[i]);
+			// $(".hand>.row2").append($card);
+			var img = $('<img class="weathercard" >'); 
+			img.attr('src', "/images/card/w{0}.jpg".format(me.Hands[i]));
+			$(".hand>.row1").append(img);
 		}
 	}
 }
@@ -203,39 +288,37 @@ function setMyself(me)
 function displayEndTurn(res,endCycleFlag)
 {
 	var flag;
+	setPlayerCard(res.player,res.playerHand,res.remaininglife);
 	if (!endCycleFlag)
 		setTides(res.fieldtide);
-	setPlayerTide(res.player,res.tide,res.remaininglife);
-	setPlayerCard(res.player,res.playerHand,res.remaininglife);
-	flag=setPlayerLife(res.player,res.remaininglife,res.life);
+	setPlayerTide(res.player,res.tide,res.remaininglife,res.transfer1,res.transfer2);
+	flag=setPlayerLife(res.player,res.remaininglife,res.life,res.loselife1,res.loselife2);
 	if (!endCycleFlag)
 		setRound(res.round);
 	return flag;
 }
 
-
-function setPlayerTide(player,tide,rem)
+//change tide animation
+function setPlayerTide(player,tide,rem,tran1,tran2)
 {
+	
 	for (var i=0;i<player.length;i++)
 	{
-		if (rem[i]==-1)
+		if (player[i]==tran1 || player[i]==tran2)
 		{
-			$("#"+player[i]+">.tidecard").text("Dead Already");
-			
-			if ($("#"+player[i]).length==0)
+			if ($("#"+player[i]).length!=0)
 			{
-				$("#userPlayer>.tidecard").text("Dead Already");
+				$("#"+player[i]+">.tidecard").remove();
+				var img = $('<img class="tidecard" >'); 
+				img.attr('src', "/images/card/t{0}.jpg".format(tide[i]));
+				$("#"+player[i]).append(img);
 			}
-		}
-		else
-		{
-			if (tide[i]!=0)
-				$("#"+player[i]+">.tidecard").text(tide[i]);
-					
-			if ($("#"+player[i]).length==0)
+			else
 			{
-				if (tide[i]!=0)
-					$("#userPlayer>.tidecard").text(tide[i]);
+				$("#userPlayer>.tidecard").remove();
+				var img = $('<img class="tidecard" >'); 
+				img.attr('src', "/images/card/t{0}.jpg".format(tide[i]));
+				$("#userPlayer").append(img);
 			}
 		}
 	}
@@ -247,40 +330,71 @@ function setPlayerCard(player,playerHand,rem)
 	{
 		if (rem[i]==-1)
 		{
+			//do nothing
 			//set animation first card,then death
-			$("#"+player[i]+">.weathercard").text("Dead Already");
+			// $("#"+player[i]+">.weathercard").text("Dead Already");
 			
-			if ($("#"+player[i]).length==0)
-			{
-				$("#userPlayer>.weathercard").text("Dead Already");
-			}
+			// if ($("#"+player[i]).length==0)
+			// {
+				// $("#userPlayer>.weathercard").text("Dead Already");
+			// }
 		} 
 		else if(playerHand[i]!=-1)
 		{
 			
-			$("#"+player[i]+">.weathercard").text(playerHand[i]);
+		//	$("#"+player[i]+">.weathercard").text(playerHand[i]);
+			//flipping animation
+			 $("#"+player[i]+">.weathercard").remove();
+			var img = $('<img class="weathercard" >'); 
+			img.attr('src', "/images/card/w{0}.jpg".format(playerHand[i]));
+			$("#"+player[i]).append(img);
 		
-			if ($("#"+player[i]).length==0)
-			{
-					$("#userPlayer>.weathercard").text(playerHand[i]);
-			}
+			// if ($("#"+player[i]).length==0)
+			// {
+					// $("#userPlayer>.weathercard").text(playerHand[i]);
+			// }
 		}
 	}
 }
 
-function setPlayerLife(player,remaininglife,life)
+function setPlayerLife(player,remaininglife,life,die1,die2)
 {
 	var flag=false;
 	for (var i=0;i<player.length;i++)
 	{
-		$("#"+player[i]+">.life").text("Life:{0}/{1}".format(remaininglife[i],life[i]));
-	
-		if ($("#"+player[i]).length==0)
+		//flip animation
+		if (i==die1 || i==die2)
 		{
-				$("#userPlayer>.life").text("Life:{0}/{1}".format(remaininglife[i],life[i]));
-				if (remaininglife[i]==-1)
-					flag=true;
+			var children;
+			if ($("#"+player[i]).length!=0)
+				children=$("#"+player[i]+">.life").children();
+			else
+				children=$("#userPlayer>.life").children();
+			var pos=life[i]-remaininglife[i]-1;
+			if (pos!=life[i])
+			{
+			    var src = $(children[pos]).attr("src").replace("life", "life_back");
+				$(children[pos]).attr("src", src);
+			}
+			else
+			{
+				//setDeathanimation
+			}
+
+		
 		}
+		// $("#"+player[i]+">.life").text("Life:{0}/{1}".format(remaininglife[i],life[i]));
+	
+	//	 if ($("#"+player[i]).length==0)
+	//	 {
+				// $("#userPlayer>.life").text("Life:{0}/{1}".format(remaininglife[i],life[i]));
+				// if (remaininglife[i]==-1)
+					// flag=true;
+	//	 }
+		
+		//death animation
+		//if (remaininglife[i]==-1)
+		//and if i==player himself set flag to true
 	}
 	return flag;
 }

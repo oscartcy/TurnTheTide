@@ -361,6 +361,7 @@ function computeRound(room)
 	result.life=new Array();
 	result.fieldtide=new Array();
 	
+	
 	var players=JSON.parse(room.players);
 	
 	var thisRoundCard=room.roundCards;
@@ -392,11 +393,13 @@ function computeRound(room)
 								if (thisRoundCard[k]==sorted[0])
 								{
 									players[i].Tide=room.currentTides[0];
+									result.transfer1=players[i].Name;
 									
 								}
 								else if (thisRoundCard[k]==sorted[1])
 								{
 									players[i].Tide=room.currentTides[1];
+									result.transfer2=players[i].Name;
 								}
 								
 							}
@@ -441,13 +444,17 @@ function computeRound(room)
 	}
 	
 	players[pos1].RemainingLife=players[pos1].RemainingLife-1;
+	result.loselife1=pos1;
+	result.loselife2=-1;
 	if (players[pos1].RemainingLife<0)
 		room.alive=room.alive-1;
 	if (pos2!=-1)
 	{
 			players[pos2].RemainingLife=players[pos2].RemainingLife-1;
+			result.loselife2=pos2;
 			if (players[pos2].RemainingLife<0)
 				room.alive=room.alive-1;
+			
 	}	
 			
 	for (var i=0;i<players.length;i++)
