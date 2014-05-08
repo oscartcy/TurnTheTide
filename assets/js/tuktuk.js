@@ -142,8 +142,13 @@ Copyright (c) 2011-2013 Tapquo S.L. - Licensed GPLv3, Commercial
 
     show = function(modal_id) {
       lock.addClass("active").show();
+
+      // if(modal != null)
+      //   modal.removeClass('hide');
+
       this._hideAnyModal();
       modal = tk.dom("[data-tuktuk=modal]#" + modal_id).addClass("active");
+      // modal.removeClass('hide');
       return this;
     };
     /*
@@ -152,10 +157,13 @@ Copyright (c) 2011-2013 Tapquo S.L. - Licensed GPLv3, Commercial
 
     hide = function() {
       lock.removeClass("active");
+      
       if (modal != null) {
+        modal.addClass('hide');
         modal.removeClass("active");
       }
       setTimeout(function() {
+        modal.removeClass("hide");
         return lock.attr("data-loading", "false").hide();
       }, 250);
       return this;

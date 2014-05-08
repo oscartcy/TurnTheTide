@@ -1,101 +1,66 @@
-<div class="row margin-bottom">
-	<div class="column_4 radius bck light padding-top padding-bottom row2">
-	
-		<div class="pro_file_div">
-			<img src="/images/profile.jpg" class="pro_pic">
-		</div>
-		<div class="pro_name">
-			<h6 class="color normal text bold">Name</h6>
-			<h6 class="color normal text bold">Score</h6>
-		</div>
+<div id="main">
+	<div class="row margin-bottom">
+		<div class="column_4 radius bck light padding-top padding-bottom row2">
 		
-		<br><br><br>
-		
-		<div class="margin-top" style="height:408px;">
-			<button id="matchButton" data-tuktuk-modal="big_modal" class="match_btn">Match</button><br><br><br>
-			<button id="createRoomButton" data-tuktuk-modal="big_modal" class="cre_rm_btn">Create Room</button>
-		</div>
-	</div>
-	
-	<div class="column_8 radius bck light padding-top padding-bottom row2">
-		<div>
-			<form id="searchbox" action="">
-				<input id="search" type="text" placeholder="Type here">
-				<input id="submit" type="submit" value="Search">
-			</form>
-		</div>
-		<div id="gameRoomList">
-			<div class="row rm_row">
-				<div class="column_5"><h6>GameRoomName</h6></div>
-				<div class="column_2"><button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button></div>
+			<div class="pro_file_div">
+				<img src="/images/profile.jpg" class="pro_pic">
 			</div>
-			<br>
-			<div class="row rm_row">
-				<div class="column_1"><img src="/images/profile.jpg"></div>
-				<div class="column_1"><img src="/images/profile.jpg"></div>
-				<div class="column_1"><img src="/images/profile.jpg"></div>
-				<div class="column_1"><img src="/images/profile.jpg"></div>
-				<div class="column_1"><img src="/images/profile.jpg"></div>
-				<div class="column_2"><button class="button small spec_btn_move">Spectate</button></div>	
+			<div class="pro_name">
+				<h6 class="color normal text bold">Name</h6>
+				<h6 class="color normal text bold">Score</h6>
+			</div>
+			
+			<br><br><br>
+			
+			<div class="margin-top" style="height:408px;">
+				<button id="matchButton" data-tuktuk-modal="gameRoom" class="match_btn">Match</button><br><br><br>
+				<!-- <button id="createRoomButton" data-tuktuk-modal="big_modal" class="cre_rm_btn">Create Room</button> -->
+				<button data-tuktuk-modal="gameRoomSelection" class="cre_rm_btn" id="createRoomButton">Create Room</button>
 			</div>
 		</div>
+		
+		<div class="column_8 radius bck light padding-top padding-bottom row2">
+			<div class="row" style="margin: 0px;">
+				<form id="searchbox" action="">
+					<input id="search" type="text" placeholder="Type here">
+					<input id="submit" type="submit" value="Search">
+				</form>
+			</div>
+			<div id="gameRoomList" class="row">
+			</div>
+		</div>
+		
 	</div>
-	
-</div>
 
-<div class="row row3">
-	<div id="ranking" class="column_12 radius bck light padding-top padding-bottom row3">
-		<div id="rank_table" class="row">
-			<div class="empty_div"></div>
-			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-			<div class="empty_div"></div>
-			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-			<div class="empty_div"></div>
-			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-			<div class="empty_div"></div>
-			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-			<div class="empty_div"></div>
-			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-			<div class="empty_div"></div>
-			<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+	<div class="row row3">
+		<div id="ranking" class="column_12 radius bck light padding-top padding-bottom row3">
+			<div id="rank_table" class="row">
+				<div class="empty_div"></div>
+				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+				<div class="empty_div"></div>
+				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+				<div class="empty_div"></div>
+				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+				<div class="empty_div"></div>
+				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+				<div class="empty_div"></div>
+				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+				<div class="empty_div"></div>
+				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div id="block" class="block">
-</div>
+<!-- <div id="block" class="block">
+</div> -->
 
-<div id="gameRoom" class="hide">
-	<p id="gameRoomName">Room 1</p>
-	<p id="gameRoomCount">4/5</p>
-	<div id="gameRoomPlayer1" class="gameRoomPlayer">
-		<img src="images/user.gif" />
-		<p id="playerName">Player</p>
-	</div>
-	<div id="gameRoomPlayer2" class="gameRoomPlayer">
-		<img src="images/user.gif" />
-		<p id="playerName">Player</p>
-	</div>
-	<div id="gameRoomPlayer3" class="gameRoomPlayer">
-		<img src="images/user.gif" />
-		<p id="playerName">Player</p>
-	</div>
-	<div id="gameRoomPlayer4" class="gameRoomPlayer">
-		<img src="images/user.gif" />
-		<p id="playerName">Player</p>
-	</div>
-	<div id="gameRoomPlayer5" class="gameRoomPlayer">
-		<img src="images/user.gif" />
-		<p id="playerName">Player</p>
-	</div>
-	<div id="gameRoomButtonGroup">
-		<button id="gameRoomStartBtn">Start</button>
-		<button id="gameRoomExitBtn">Leave</button>
-	</div>
-</div>
-
-<div id="gameRoomSelection" class="block">
-		<form id="form" name="form" class="margin-top">
+<div id="gameRoomSelection" data-tuktuk="modal" class="column_5">
+    <header>
+        <h4 class="text thin">Create New Room</h4>
+    </header>
+    <article>
+		<form id="createRoomForm" name="form" class="margin-top">
 			<fieldset class="createRmfield">
 				<label>Size:<small>required</small></label>
 				<span class="select">
@@ -113,16 +78,51 @@
 				<label>Name:<small>required</small></label>
 				<input type="text" name="name" id="name">
 			</fieldset>
-			<br>
-			<fieldset>
-				<div id="createRoomButtonGroup">
-					<button id="createRoomStartBtn">Create</button>
-					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-					<button id="createRoomExitBtn">Leave</button>
-				</div>
-			</fieldset>
 		</form>
+    </article>
+    <footer>
+    	<button id="createRoomStartBtn" class="button success">Create</button>
+        <button data-modal="close" class="button secondary"><span class="icon remove"></span>Close</button>
+    </footer>
 </div>
+
+<div id="gameRoom" data-tuktuk="modal" class="column_9">
+    <header>
+        <h4 class="text thin" id="gameRoomName">Create New Room</h4>
+    </header>
+    <article>
+		<!-- <p id="gameRoomName">Room 1</p> -->
+		<p id="gameRoomCount">4/5</p>
+		<div class='row'>
+			<div id="gameRoomPlayer1" class="gameRoomPlayer column_2">
+				<img src="images/user.gif" />
+				<p id="playerName" class="text center">Player</p>
+			</div>
+			<div id="gameRoomPlayer2" class="gameRoomPlayer column_2">
+				<img src="images/user.gif" />
+				<p id="playerName" class="text center">Player</p>
+			</div>
+			<div id="gameRoomPlayer3" class="gameRoomPlayer column_2">
+				<img src="images/user.gif" />
+				<p id="playerName" class="text center">Player</p>
+			</div>
+			<div id="gameRoomPlayer4" class="gameRoomPlayer column_2">
+				<img src="images/user.gif" />
+				<p id="playerName" class="text center">Player</p>
+			</div>
+			<div id="gameRoomPlayer5" class="gameRoomPlayer column_2">
+				<img src="images/user.gif" />
+				<p id="playerName" class="text center">Player</p>
+			</div>
+		</div>
+	</article>
+	<footer>
+		<button id="gameRoomStartBtn" data-modal="close" class="button">Start</button>
+		<button id="gameRoomExitBtn" data-modal="close" class="button secondary">Leave</button>
+	</footer>
+</div>
+
+
 
 <div id="GamePlaying" class="hide">
 

@@ -39,10 +39,12 @@
 
 #gameRoomList{
 	position:relative;
-	top:-140px;
-	height:430px;
+	/*top:-140px;*/
+	/*height:430px;*/
+	height:330px;
 	overflow:auto;
 	overflow-x:hidden;
+	/*margin: 0px;*/
 }
 
 #ranking{
@@ -78,7 +80,8 @@
 
 .rm_row{
 	position:relative;
-	left:25px;
+	left:50px;
+	/*margin: 0px !important ;*/
 }
 
 .row2{
@@ -103,7 +106,7 @@
 	display:none;
 }
 
-#gameRoomSelection{
+/*#gameRoomSelection{
 	width:400px;
 	height:190px;
 	background-color:#b0c4de;
@@ -111,7 +114,7 @@
 	top:205px;
 	left:200px;
 	border:1px solid black;
-}
+}*/
 
 .createRmfield{
 	position:relative;
@@ -123,14 +126,13 @@
 	left:62px;
 }
 
-#createRoomButtonGroup{
+/*#createRoomButtonGroup{
 	position:relative;
 	left:97px;
-}
+}*/
 
 #searchbox{
 	position:relative;
-	top:-100px;
 	background-color: #eaf8fc;
 	background-image: linear-gradient(#fff, #d4e8ec);
 	border-radius: 35px;    
@@ -140,8 +142,8 @@
 	width: 484px;
 	height: 50px;
 	padding: 10px;
-	margin: 100px auto 50px;
 	overflow: hidden; /* Clear floats */
+	/*margin: 0px;*/
 }
 
 #search, 
@@ -194,5 +196,5 @@
 }
 
 #submit::-moz-focus-inner {
-       border: 0;  /* Small centering fix for Firefox */
-}
+       border: 0;  // Small centering fix for Firefox
+} 

@@ -1,10 +1,10 @@
-#main {
+/*#main {
 	width: 800px;
 	height: 600px;
 	border: 1px solid black;
-}
+}*/
 
-#gameRoom {
+/*#gameRoom {
 	position: absolute;
 	left: 100px;
 	top: 100px;
@@ -12,13 +12,13 @@
 	width: 600px;
 	height: 300px;
 	background: grey;
-}
+}*/
 
-#gameRoomName {
+/*#gameRoomName {
 	position: absolute;
 	left: 10px;
-	/*top: 10px;*/
-}
+	top: 10px;
+}*/
 
 #gameRoomCount {
 	position: absolute;
@@ -26,7 +26,7 @@
 	/*top: 10px;*/
 }
 
-.gameRoomPlayer {
+/*.gameRoomPlayer {
 	position: absolute;
 	width: 80px;
 	height: 100px;
@@ -52,18 +52,18 @@
 
 #gameRoomPlayer5 {
 	left: 460px;
-}
+}*/
 
 .gameRoomPlayer img {
 	width: 50px;
 	margin: auto;
 	display: block;
 }
-
+/*
 #gameRoomButtonGroup {
 	position: absolute;
 	top: 200px;
-}
+}*/
 
 .hide {
 	display: none !important;

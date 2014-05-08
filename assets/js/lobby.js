@@ -9,74 +9,163 @@ function getRandomInt(min, max) {
 }
 	
 (function($){
-	//testing area//
-	var btn = $("#createRoomButton");
-
-	btn.on('click', function() {
-		var gameRoomSelection = $("#gameRoomSelection").removeClass();
-		var block = $("#block").removeClass('block');
-		
-		//create room start button
-		var createRoomStartBtn = $("#createRoomStartBtn");
-		createRoomStartBtn.on('click',function(){
-			var size = $("#gameRoomSize").val();
-			var gameRoomSelection = $("#gameRoomSelection").addClass('block');
-			var block = $("#block").addClass('block');
-			socket.post('/GameRoom/create',
-			{size: size},
-			function(res) {
-				console.log("create room response: ", res);
-			});
-			
-		});
-		
-		//create room leave button
-        $('#createRoomExitBtn').on('click', function(e) {
-        	var gameRoomSelection = $("#gameRoomSelection").addClass('block');
-			var block = $("#block").addClass('block');
-        	socket.post('/GameRoom/leave/' + room.id,
-        		{ playerId: playerId },
-        		function(res) {
-        			if(res.error) {
-        				console.log(res.error);
-        			}
-        		});
-        });
-		
-	});
-
-    var matchBtn = $("#matchButton");
-
-    matchBtn.on('click', function() {
-        matchRoom();
-    });
-
-    function matchRoom() {
-        socket.post('/GameRoom/match',
-            { playerId: playerId },
-            function(res) {
-                console.log("Match Game Room response: ", res);
-
-                if(res.error)
-                    console.log(res);
-                else
-                    joinGameRoom(res);
-            });
-    }
-
-	var playerId = getRandomInt(1, 100000);
-	$('#playerName').text(playerId);
-
-	function getRandomInt(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-
-	//end of testing area//
-
 	//main//
+	init();
 	refreshGameRoomList();
-	initSocketListen();
 	//end of main
+
+	function init() {
+		initSocketListen();
+		initCreateRoomButton();
+		initMatchButton();
+
+		function initSocketListen(){
+			socket.on('message', function(res) {
+				if(res.model == 'gameroom') {
+					if(res.verb == 'create') {
+						console.log("some gameroom created", res);
+
+						refreshGameRoomList();
+					}
+				}
+
+				if(res.model == 'gameroom' && res.verb == 'update') {
+					console.log('room message: ', res, res.data.room);
+
+					updateRoomInfo(res.data.room);
+				}
+
+				if(res.model == 'gameroom' && res.verb == 'destroy') {
+					console.log('some gameroom destroy', res);
+
+					refreshGameRoomList();
+				}
+			});
+
+			socket.on('gameRoom', function(res) {
+				console.log('game room status:', res);
+
+				if(res.status == 'ready') {
+					gameRoomReady(res.roomMaster);
+
+				}
+			});
+
+			//message for in game
+			socket.on('game', function(res) {
+				console.log('game room status:', res);
+
+				if(res.status == 'gameCreated') {
+						 setUpGame(res.game);
+				}
+
+				if (res.status=='handReady'){
+					setPlayerReady(res.playerId);		
+				}
+
+				if (res.status=='endRound')
+				{
+					console.log(res.round);
+					//false= this player not dead
+					if (!displayEndTurn(res.round,res.endCycle))
+						setHandListener(gameID);
+
+				}
+			});
+		};
+
+		function initCreateRoomButton() {
+	        // var btn = $("#createRoomButton");
+
+	        // btn.on('click', function() {
+	        //     // var gameRoomSelection = $("#gameRoomSelection").removeClass();
+	        //     // var block = $("#block").removeClass('block');
+
+	        //     var gameRoomSelection = $("#gameRoomSelection").addClass('active');
+
+	        //     //create room start button
+	        //     var createRoomStartBtn = $("#createRoomStartBtn");
+	        //     createRoomStartBtn.on('click',function(){
+	        //         var size = $("#gameRoomSize").val();
+         //            var name = $("#createRoomForm input[name=name]").val();
+
+	        //         var gameRoomSelection = $("#gameRoomSelection").addClass('block');
+	        //         var block = $("#block").addClass('block');
+	        //         socket.post('/GameRoom/create',
+	        //             {
+         //                    size: size,
+         //                    name: name
+         //                },
+	        //             function(res) {
+	        //                 console.log("create room response: ", res);
+	        //             });
+
+	        //     });
+
+	        //     //create room leave button
+	        //     $('#createRoomExitBtn').on('click', function(e) {
+	        //         var gameRoomSelection = $("#gameRoomSelection").addClass('block');
+	        //         var block = $("#block").addClass('block');
+	        //         socket.post('/GameRoom/leave/' + room.id,
+	        //             { playerId: playerId },
+	        //             function(res) {
+	        //                 if(res.error) {
+	        //                     console.log(res.error);
+	        //                 }
+	        //             });
+	        //     });
+
+	        // });
+
+			var btn = $("#createRoomButton");
+			btn.on('click', function() {
+				$("#createRoomForm input[name=name]").val("");
+			});
+
+            //create room start button
+            var createRoomStartBtn = $("#createRoomStartBtn");
+            createRoomStartBtn.on('click',function(){
+                var size = $("#gameRoomSize").val();
+                var name = $("#createRoomForm input[name=name]").val();
+
+                // $("#gameRoomSelection").removeClass('active');
+                // createRoomStartBtn.off('click');
+                TukTuk.Modal.hide();
+
+                socket.post('/GameRoom/create',
+                    {
+                        size: size,
+                        name: name
+                    },
+                    function(res) {
+                        console.log("create room response: ", res);
+                    });
+
+            });
+	    }
+
+	    function initMatchButton() {
+
+	    	var matchBtn = $("#matchButton");
+
+	    	matchBtn.on('click', function() {
+	    		matchRoom();
+	    	});
+
+	    	function matchRoom() {
+	    		socket.post('/GameRoom/match',
+	    			{ playerId: playerId },
+	    			function(res) {
+	    				console.log("Match Game Room response: ", res);
+
+	    				if(res.error)
+	    					console.log(res);
+	    				else
+	    					joinGameRoom(res);
+	    			});
+	    	}
+	    }
+	}
 
 	function refreshGameRoomList() {
 		socket.get('/GameRoom',
@@ -91,58 +180,8 @@ function getRandomInt(min, max) {
 				});
 			});
 	}
-	
-	function initSocketListen(){
-		socket.on('message', function(res) {
-			if(res.model == 'gameroom') {
-				if(res.verb == 'create') {
-					console.log("some gameroom created", res);
-
-					var room = res.data;
-
-					addGameRoomToList(room);
-				}
-			}
-
-			if(res.model == 'gameroom' && res.verb == 'update') {
-				console.log('room message: ', res, res.data.room);
-
-				updateRoomInfo(res.data.room);
-			}
-
-			if(res.model == 'gameroom' && res.verb == 'destroy') {
-				console.log('some gameroom destroy', res);
-
-				refreshGameRoomList();
-			}
-		});
-
-		socket.on('gameRoom', function(res) {
-			console.log('game room status:', res);
-
-			if(res.status == 'ready') {
-				gameRoomReady(res.roomMaster);
-			}
-
-			if(res.status == 'start') {
-				console.log('game start:', res);
-
-				startGame(res.room);
-			}
-		});
-	};
 
 	function addGameRoomToList(room) {
-		/*var listItem = $('<li/>', {
-			id: 'gameroom' + room.id,
-			html: 'Game Room' + room.id
-		});
-		
-		
-		var tr = $("<tr><td>"+ "<img src=/images/gameroom.jpg style=\"width:80px;height:50px;\">" + '<br>Game Room' + room.id + "</td></tr>",{
-			id: 'gameroom' + room.id
-		});*/
-		
 		var row_div_1 =$('<div/>',{
 			id: 'gameroom' + room.id,
 			class: 'row rm_row'
@@ -156,7 +195,7 @@ function getRandomInt(min, max) {
 		var join_button_div=$('<div/>',{
 			class:'column_2',
 		});
-		var join_button = $("<button class=\"button success small\">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>");
+		var join_button = $('<button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>');
 		join_button.on('click', function() {
 			socket.post('/GameRoom/join/' + room.id,
 				{ playerId: playerId },
@@ -166,6 +205,7 @@ function getRandomInt(min, max) {
 					} else {
 						console.log("Join Game Room response: ", res);
 
+						TukTuk.Modal.show('gameRoom');
 						joinGameRoom(res);
 					}
 				});
@@ -237,18 +277,22 @@ function getRandomInt(min, max) {
 	}
 
 	function joinGameRoom(room) {
-		var gameroom = $("#gameRoom").removeClass('hide');
-		var block = $("#block").removeClass('block');
+		// var gameroom = $("#gameRoom").removeClass('hide');
+		// var block = $("#block").removeClass('block');
 
-		$("#gameRoomName").text('Room ' + room.id);
+		// var gameroom = $("#gameRoom").addClass('active');
+
+		$("#gameRoomName").text(room.name);
 
 		$("#gameRoomStartBtn").prop("disabled", true);
 
 		updateRoomInfo(room);
 
 		//start button
-		$("#gameRoomStartBtn").on('click', function(e) {
-			$(e.target).off('click');
+		$("#gameRoomStartBtn").on('click', gameRoomStartHandler);
+
+		function gameRoomStartHandler(e) {
+			$(e.target).off('click', gameRoomStartHandler);
 			$(e.target).prop('disabled', true);
 
 			socket.post('/GameRoom/start/' + room.id, 
@@ -256,19 +300,18 @@ function getRandomInt(min, max) {
 				function(res) {
 					if(res.error)
 						console.log(res.error);
-				});
-
-			socket.delete('/GameRoom/' + room.id,
-				function(res) {
-					console.log('room deleted: ', res);
-				})
-		});
+					if (res.status=="success")
+					{
+						startGame(room);
+					}
+				});	
+		}
 
         //leave button
-        $('#gameRoomExitBtn').on('click', function(e) {
-        	$(e.target).off('click');
-        	gameroom.addClass('hide');
-			block.addClass('block');
+        $('#gameRoomExitBtn').on('click', gameRoomExitHandler);
+
+        function gameRoomExitHandler(e) {
+        	$(e.target).off('click', gameRoomExitHandler);
 
         	socket.post('/GameRoom/leave/' + room.id,
         		{ playerId: playerId },
@@ -277,7 +320,7 @@ function getRandomInt(min, max) {
         				console.log(res.error);
         			}
         		});
-        });
+        }
     }
 	
 	function updateRankTable(){
@@ -308,13 +351,13 @@ function getRandomInt(min, max) {
     }
 
     function startGame(room) {
-    	socket.post('/Game/start/' + room.id, 
-    		{}, 
+    	socket.post('/Game/create/', 
+    		{ roomid: room.id, playerId: playerId  }, 
     		function(res) {
     			console.log('game started: ', res);
     		});
 
-    	$("#gameRoom").addClass('hide');
+    	// $("#gameRoom").addClass('hide');
     }
 
 })(jQuery);

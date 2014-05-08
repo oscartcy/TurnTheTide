@@ -2,6 +2,7 @@ function setUpGame(info)
 {
 	gameID=info.id;
 	$("#main").addClass("hide");
+	TukTuk.Modal.hide();
 	$("#GamePlaying").removeClass("hide");
 	var players=JSON.parse(info.players);
 	var me=getMyself(players);
