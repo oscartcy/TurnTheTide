@@ -64,14 +64,35 @@
     <!-- Jquery -->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <script src="/js/tuktuk.js"></script>
+    <script src="https://connect.facebook.net/en_US/sdk.js"></script>
+
     <!-- listen on socket.io for incoming messages -->
     <script type="text/javascript" src="/js/app.js"></script>
-	<script type="text/javascript" src="/js/lobby.js"></script>
-	<script type="text/javascript" src="/js/gamecore.js"></script>
+    <script type="text/javascript" src="/js/lobby.js"></script>
+    <script type="text/javascript" src="/js/gamecore.js"></script>
+    <script type="text/javascript" src="/js/facebook.js"></script>
+
     <!-- Your scripts here? -->
     <!-- Your scripts here? -->
     <!-- Your scripts here? -->
-	
+    <script>
+        var app_ID = '709747785734162';
+        window.fbAsyncInit = function() {
+            FB.init({
+                //Important: remember to change appID
+                appId: app_ID,
+                frictionlessRequests: true,
+                status: true,
+                version: 'v2.0'
+            });
+
+            FB.Event.subscribe('auth.authResponseChange', onAuthResponseChange);
+            FB.Event.subscribe('auth.statusChange', onStatusChange);
+        };
+
+        // Here we run a very simple test of the Graph API after login is
+        // successful.  See statusChangeCallback() for when this call is made.
+    </script>
 
     <!--
 
