@@ -149,6 +149,22 @@
 				GameRoom.unsubscribe(req.socket, room);
 				GameRoom.publishUpdate(roomid, { room: room});
 
+				if(players.length <= 0) {
+					room.destroy(function(err) {
+						if(err)
+							return res.json({ error: err});
+
+						// GameRoom.publishDestroy(room.id);
+			 			var sockets = GameRoom.subscribers();
+
+			 			for(var i in sockets) {
+			 				var socket = sockets[i];
+			 				socket.emit('message', { model: 'gameroom', verb: 'destroy', id: room.id});
+			 			}
+
+					});
+				}
+
 				return res.json('room', room); 							
 			});
 		}
