@@ -29,6 +29,7 @@ function onStatusChange(response) {
                 console.log("Trying to get friend list...");
                 getFriends(function(){
                     renderWelcome();
+                    // FB.Canvas.setSize({ width: 800, height: 600 });
                 });
             });
         });

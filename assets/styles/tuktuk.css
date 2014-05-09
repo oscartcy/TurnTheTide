@@ -181,7 +181,7 @@ form .fieldset input[type="text"],.form .fieldset input[type="text"],form fields
 .hide-phone{display:inherit !important}
 .hide-tablet{display:inherit !important}
 .hide-screen{display:none !important}
-}@media only screen and (min-width: 768px) and (max-width: 959px){.row{width:768px;}
+}@media only screen{.row{width:768px;}
 .row .row{margin:0 -14px 0 -14px}
 [class^="column_"],[class*=" column_"]{margin:0 14px 0 14px}
 .column_1{width:36px}
