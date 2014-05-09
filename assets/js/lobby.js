@@ -75,48 +75,6 @@ function getRandomInt(min, max) {
 		};
 
 		function initCreateRoomButton() {
-	        // var btn = $("#createRoomButton");
-
-	        // btn.on('click', function() {
-	        //     // var gameRoomSelection = $("#gameRoomSelection").removeClass();
-	        //     // var block = $("#block").removeClass('block');
-
-	        //     var gameRoomSelection = $("#gameRoomSelection").addClass('active');
-
-	        //     //create room start button
-	        //     var createRoomStartBtn = $("#createRoomStartBtn");
-	        //     createRoomStartBtn.on('click',function(){
-	        //         var size = $("#gameRoomSize").val();
-         //            var name = $("#createRoomForm input[name=name]").val();
-
-	        //         var gameRoomSelection = $("#gameRoomSelection").addClass('block');
-	        //         var block = $("#block").addClass('block');
-	        //         socket.post('/GameRoom/create',
-	        //             {
-         //                    size: size,
-         //                    name: name
-         //                },
-	        //             function(res) {
-	        //                 console.log("create room response: ", res);
-	        //             });
-
-	        //     });
-
-	        //     //create room leave button
-	        //     $('#createRoomExitBtn').on('click', function(e) {
-	        //         var gameRoomSelection = $("#gameRoomSelection").addClass('block');
-	        //         var block = $("#block").addClass('block');
-	        //         socket.post('/GameRoom/leave/' + room.id,
-	        //             { playerId: playerId },
-	        //             function(res) {
-	        //                 if(res.error) {
-	        //                     console.log(res.error);
-	        //                 }
-	        //             });
-	        //     });
-
-	        // });
-
 			var btn = $("#createRoomButton");
 			btn.on('click', function() {
 				$("#createRoomForm input[name=name]").val("");
@@ -130,7 +88,7 @@ function getRandomInt(min, max) {
 
                 // $("#gameRoomSelection").removeClass('active');
                 // createRoomStartBtn.off('click');
-                TukTuk.Modal.hide();
+                // TukTuk.Modal.hide();
 
                 socket.post('/GameRoom/create',
                     {
@@ -138,7 +96,25 @@ function getRandomInt(min, max) {
                         name: name
                     },
                     function(res) {
-                        console.log("create room response: ", res);
+                    	console.log("create room response: ", res);
+
+                    	if(res.error)
+                    		console.log(res);
+                    	else {
+	                    	var room = res;
+
+	                    	socket.post('/GameRoom/join/' + room.id,
+	                    		{ playerId: playerId },
+	                    		function(res) {
+	                    			if(res.error) {
+	                    				console.log(res.error);
+	                    			} else {
+	                    				console.log("Join Game Room response: ", res);
+
+	                    				joinGameRoom(res);
+	                    			}
+	                    		});
+	                    }
                     });
 
             });
@@ -204,8 +180,7 @@ function getRandomInt(min, max) {
 						console.log(res.error);
 					} else {
 						console.log("Join Game Room response: ", res);
-
-						TukTuk.Modal.show('gameRoom');
+						
 						joinGameRoom(res);
 					}
 				});
@@ -277,10 +252,7 @@ function getRandomInt(min, max) {
 	}
 
 	function joinGameRoom(room) {
-		// var gameroom = $("#gameRoom").removeClass('hide');
-		// var block = $("#block").removeClass('block');
-
-		// var gameroom = $("#gameRoom").addClass('active');
+		TukTuk.Modal.show('gameRoom');
 
 		$("#gameRoomName").text(room.name);
 
