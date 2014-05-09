@@ -21,12 +21,11 @@ module.exports = {
 				var roomid = req.param('roomid');
 				GameRoom.findOne(roomid).done(function (err, room) {
 					var number=room.size;
-					console.log(room.players);
+					
 					var playername=JSON.parse(room.players);
 					var playerJSON=generatePlayerInfo(playername);
-					console.log(number);
-					console.log(playername);
-					console.log(playerJSON);
+		
+				
 					
 					
 					var curTides=new Array();
@@ -52,6 +51,7 @@ module.exports = {
 					}).done(function(err, game) {  
 						var sockets = GameRoom.subscribers(room.id);
 						console.log(game);
+						console.log(game.currentTides);
 
 						for(var i in sockets) {
 							var socket = sockets[i];
@@ -218,6 +218,11 @@ function generateTides(curTides,remTides)
 		curTides.push(remTides[ran]);
 		remTides.splice(ran,1);
 	}
+	
+	curTides.sort(function compareNumbers(a, b) {
+		return a - b;
+	});
+	console.log(curTides);
 }
 
 function generatePlayerInfo(playername)
@@ -475,6 +480,7 @@ function computeRound(room)
 	console.log(result.playerHand);
 	console.log(result.tide);
 	console.log(result.remaininglife);
+	console.log(result.fieldtide);
 	
 	return result;
 	
