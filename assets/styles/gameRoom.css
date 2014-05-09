@@ -54,7 +54,7 @@
 	left: 460px;
 }*/
 
-.gameRoomPlayer img {
+.gameRoomPlayer,#endGameModal img {
 	width: 50px;
 	margin: auto;
 	display: block;

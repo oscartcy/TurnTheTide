@@ -9,6 +9,34 @@ function getRandomInt(min, max) {
 }
 	
 (function($){
+	//testing for end game//
+	endGameDisplay(['aaa', 'bbb', 'ccc', 'ddd', 'eee'], [1, 2, 3, 4, 5])
+	function endGameDisplay(players, scores) {
+		var article = $("#endGameModal article").empty();
+
+		for(var i in players) {
+			var player = players[i];
+			var score = scores[i];
+
+			var row = $('<div />', {
+				class: 'row'
+			});
+
+			$('<div />', {
+				class: 'column_3',
+				html: '<img src="images/user.gif" /><p id="playerName" class="text center">'+player+'</p>'
+			}).appendTo(row);
+
+			$('<div />', {
+				class: 'column_3',
+				html: '<h1 class="color theme text center">'+score+'</h1>'
+			}).appendTo(row);
+
+			article.append(row);
+		}
+	}
+	//end of testing for end game//
+
 	//main//
 	init();
 	refreshGameRoomList();
