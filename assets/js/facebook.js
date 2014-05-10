@@ -1,6 +1,7 @@
 var fbLogin = false;
 
-    // var app_ID = '709747785734162';
+(function($){
+    var app_ID = '709747785734162';
     // window.fbAsyncInit = function() {
     //     FB.init({
     //         //Important: remember to change appID
@@ -14,6 +15,16 @@ var fbLogin = false;
     //     FB.Event.subscribe('auth.statusChange', onStatusChange);
     //     // FB.Canvas.setSize({ width: 800, height: 600 });
     // };
+
+    FB.init({
+        appId: app_ID,
+        frictionlessRequests: true,
+        status: true,
+        version: 'v2.0'
+    });
+
+    FB.Event.subscribe('auth.authResponseChange', onAuthResponseChange);
+    FB.Event.subscribe('auth.statusChange', onStatusChange);
 
     var fbUserInfo = {};
 
@@ -131,3 +142,4 @@ var fbLogin = false;
         });
     }
 
+})(jQuery);
