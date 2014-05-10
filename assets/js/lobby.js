@@ -196,7 +196,7 @@ function getRandomInt(min, max) {
     		var player = players[i];
     		var player_div= $('<div/>', {
     			class:'column_1',
-    		}).append("<img src=\"/images/user.gif\">");
+    		}).append("<img src=\"/images/user.jpg\">");
 
     		row_div_2.append(player_div);
 
@@ -214,7 +214,7 @@ function getRandomInt(min, max) {
     	for(; i < room.size; i++) {
     		var player_div= $('<div/>', {
     			class:'column_1',
-    		}).append("<img src=\"/images/user.gif\">");
+    		}).append("<img src=\"/images/user.jpg\">");
 
     		row_div_2.append(player_div);
     	}
@@ -222,7 +222,7 @@ function getRandomInt(min, max) {
 		for(; i < 5; i++) {
     		var player_div= $('<div/>', {
     			class:'column_1',
-    		}).append("<img src=\"/images/no_user.gif\">");
+    		}).append("<img src=\"/images/no_user.jpg\">");
 
     		row_div_2.append(player_div);
     	}
@@ -328,13 +328,13 @@ function getRandomInt(min, max) {
     	for(; i < size; i++) {
     		var playerDiv = $('#gameRoomPlayer' + (i + 1));
     		playerDiv.find('p').text("");
-    		playerDiv.find('img').attr('src', 'images/user.gif');
+    		playerDiv.find('img').attr('src', 'images/user.jpg');
     	}
 
 		for(; i < 5; i++) {
     		var playerDiv = $('#gameRoomPlayer' + (i + 1));
     		playerDiv.find('p').text("");
-    		playerDiv.find('img').attr('src', 'images/no_user.gif');
+    		playerDiv.find('img').attr('src', 'images/no_user.jpg');
     	}
     }
 
