@@ -311,6 +311,8 @@ function getRandomInt(min, max) {
     		var player = players[i];
     		var playerDiv = $('#gameRoomPlayer' + (i + 1));
 
+    		playerDiv.find('p').text("");
+
     		var loadPlayerInfo = function() {
     			var div = playerDiv;
 
@@ -370,7 +372,7 @@ function loadPlayerInfoFromFb(fbid, callback) {
 	// }
 	$.get("http://graph.facebook.com/{0}".format(fbid))
 		.done(function(res) {
-			var name;
+			var name = "";
 
 			if(res.name)
 				name = res.name;
@@ -378,5 +380,5 @@ function loadPlayerInfoFromFb(fbid, callback) {
 			var picture = "http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid);
 			callback(name, picture);
 		})
-	callback("http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid));
+	// callback("http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid));
 }
