@@ -78,23 +78,30 @@
     }
 
     function serverLogin() {
-        socket.post('/User/login', 
-            { fbid: fbUserInfo.me.id }, 
-            function(res) {
-                if(res.error)
-                    console.log(res);
-                else {
-                    console.log('server login success', res);
+        if(socket.socket.connected)
+            login();
+        else 
+            socket.on('connect', login);
 
-                    fbUserInfo.me.score = res.user.score;
+        function login(){
+            socket.post('/User/login', 
+                { fbid: fbUserInfo.me.id }, 
+                function(res) {
+                    if(res.error)
+                        console.log(res);
+                    else {
+                        console.log('server login success', res);
 
-                    playerId = fbUserInfo.me.id;
+                        fbUserInfo.me.score = res.user.score;
 
-                    $(".pro_pic").attr("src", fbUserInfo.me.picture.data.url);
-                    $("#userName").html("Name: " + fbUserInfo.me.name);
-                    $("#userScore").html("Score: " + fbUserInfo.me.score);
-                }
-            });
+                        playerId = fbUserInfo.me.id;
+
+                        $(".pro_pic").attr("src", fbUserInfo.me.picture.data.url);
+                        $("#userName").html("Name: " + fbUserInfo.me.name);
+                        $("#userScore").html("Score: " + fbUserInfo.me.score);
+                    }
+                });
+        }
     }
 
     function getFriends(callback) {

@@ -10,8 +10,16 @@ function getRandomInt(min, max) {
 	
 (function($){
 	//main//
-	init();
-	refreshGameRoomList();
+	if(socket.socket.connected)
+		main();
+	else 
+		socket.on('connect', main);
+
+	function main() {
+		init();
+		refreshGameRoomList();
+	}
+	
 	//end of main
 
 	function init() {
