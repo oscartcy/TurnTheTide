@@ -38,9 +38,13 @@ function getRandomInt(min, max) {
 				}
 
 				if(res.model == 'gameroom' && res.verb == 'update') {
-					console.log('room message: ', res, res.data.room);
+					console.log('room message: ', res);
 
-					updateRoomInfo(res.data.room);
+					if(res.data)
+						updateRoomInfo(res.data.room);
+
+					//without room info, boardcast update
+					refreshGameRoomList();
 				}
 
 				if(res.model == 'gameroom' && res.verb == 'destroy') {
@@ -83,48 +87,6 @@ function getRandomInt(min, max) {
 		};
 
 		function initCreateRoomButton() {
-	        // var btn = $("#createRoomButton");
-
-	        // btn.on('click', function() {
-	        //     // var gameRoomSelection = $("#gameRoomSelection").removeClass();
-	        //     // var block = $("#block").removeClass('block');
-
-	        //     var gameRoomSelection = $("#gameRoomSelection").addClass('active');
-
-	        //     //create room start button
-	        //     var createRoomStartBtn = $("#createRoomStartBtn");
-	        //     createRoomStartBtn.on('click',function(){
-	        //         var size = $("#gameRoomSize").val();
-         //            var name = $("#createRoomForm input[name=name]").val();
-
-	        //         var gameRoomSelection = $("#gameRoomSelection").addClass('block');
-	        //         var block = $("#block").addClass('block');
-	        //         socket.post('/GameRoom/create',
-	        //             {
-         //                    size: size,
-         //                    name: name
-         //                },
-	        //             function(res) {
-	        //                 console.log("create room response: ", res);
-	        //             });
-
-	        //     });
-
-	        //     //create room leave button
-	        //     $('#createRoomExitBtn').on('click', function(e) {
-	        //         var gameRoomSelection = $("#gameRoomSelection").addClass('block');
-	        //         var block = $("#block").addClass('block');
-	        //         socket.post('/GameRoom/leave/' + room.id,
-	        //             { playerId: playerId },
-	        //             function(res) {
-	        //                 if(res.error) {
-	        //                     console.log(res.error);
-	        //                 }
-	        //             });
-	        //     });
-
-	        // });
-
 			var btn = $("#createRoomButton");
 			btn.on('click', function() {
 				$("#createRoomForm input[name=name]").val("");
@@ -190,6 +152,9 @@ function getRandomInt(min, max) {
 	}
 
 	function addGameRoomToList(room) {
+		var players = JSON.parse(room.players);
+    	var size = room.size;
+
 		var row_div_1 =$('<div/>',{
 			id: 'gameroom' + room.id,
 			class: 'row rm_row'
@@ -225,32 +190,42 @@ function getRandomInt(min, max) {
 		var row_div_2 =$('<div/>',{
 			class: 'row rm_row'
 		});
-		var player_div_1=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_1.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_2=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_2.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_3=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_3.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_4=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_4.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_5=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_5.append("<img src=\"/images/profile.jpg\">");
-		
-		
+
+    	var i;
+    	for(i = 0; i < players.length; i++) {
+    		var player = players[i];
+    		var player_div= $('<div/>', {
+    			class:'column_1',
+    		}).append("<img src=\"/images/user.gif\">");
+
+    		row_div_2.append(player_div);
+
+    		var loadPlayerInfo = function() {
+    			var div = player_div;
+
+    			return (function(name, picture) {
+    				div.find('img').attr('src', picture);
+	    		});
+	    	};
+
+	    	loadPlayerInfoFromFb(player, loadPlayerInfo());
+    	}
+
+    	for(; i < room.size; i++) {
+    		var player_div= $('<div/>', {
+    			class:'column_1',
+    		}).append("<img src=\"/images/user.gif\">");
+
+    		row_div_2.append(player_div);
+    	}
+
+		for(; i < 5; i++) {
+    		var player_div= $('<div/>', {
+    			class:'column_1',
+    		}).append("<img src=\"/images/no_user.gif\">");
+
+    		row_div_2.append(player_div);
+    	}
 		
 		var spec_button_div=$('<div/>',{
 			class:'column_2',
@@ -272,11 +247,6 @@ function getRandomInt(min, max) {
 		});
 		spec_button_div.append(spec_button);
 
-		row_div_2.append(player_div_1);
-		row_div_2.append(player_div_2);
-		row_div_2.append(player_div_3);
-		row_div_2.append(player_div_4);
-		row_div_2.append(player_div_5);
 		row_div_2.append(spec_button_div);
 
 		$("#gameRoomList").append(row_div_1);
@@ -285,11 +255,6 @@ function getRandomInt(min, max) {
 	}
 
 	function joinGameRoom(room) {
-		// var gameroom = $("#gameRoom").removeClass('hide');
-		// var block = $("#block").removeClass('block');
-
-		// var gameroom = $("#gameRoom").addClass('active');
-
 		$("#gameRoomName").text(room.name);
 
 		$("#gameRoomStartBtn").prop("disabled", true);
@@ -343,13 +308,31 @@ function getRandomInt(min, max) {
 
     	var i;
     	for(i = 0; i < players.length; i++) {
+    		var player = players[i];
     		var playerDiv = $('#gameRoomPlayer' + (i + 1));
-    		playerDiv.find('p').text(players[i]);
+
+    		var loadPlayerInfo = function() {
+    			var div = playerDiv;
+
+    			return (function(name, picture) {
+    				div.find('p').text(name);
+    				div.find('img').attr('src', picture);
+	    		});
+	    	};
+
+	    	loadPlayerInfoFromFb(player, loadPlayerInfo());
     	}
 
-    	for(; i < 5; i++) {
+    	for(; i < size; i++) {
     		var playerDiv = $('#gameRoomPlayer' + (i + 1));
     		playerDiv.find('p').text("");
+    		playerDiv.find('img').attr('src', 'images/user.gif');
+    	}
+
+		for(; i < 5; i++) {
+    		var playerDiv = $('#gameRoomPlayer' + (i + 1));
+    		playerDiv.find('p').text("");
+    		playerDiv.find('img').attr('src', 'images/no_user.gif');
     	}
     }
 
@@ -369,3 +352,20 @@ function getRandomInt(min, max) {
     }
 
 })(jQuery);
+
+function loadPlayerInfoFromFb(fbid, callback) {
+	if(fbLogin)
+		load();
+	else
+		FB.Event.subscribe('auth.statusChange', load);
+
+	function load(){
+		FB.api('/'+fbid, {fields: 'name,picture.width(100).height(100)'}, function(response){
+			if( !response.error ) {
+				return callback(response.name, response.picture.data.url);
+			} else {
+				console.error('fb api error: ', response);
+			}
+		});
+	}
+}

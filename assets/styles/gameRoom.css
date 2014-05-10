@@ -22,7 +22,7 @@
 
 #gameRoomCount {
 	position: absolute;
-	left: 500px;
+	left: 644px;
 	/*top: 10px;*/
 }
 
@@ -55,7 +55,7 @@
 }*/
 
 .gameRoomPlayer img {
-	width: 50px;
+	width: 100px;
 	margin: auto;
 	display: block;
 }

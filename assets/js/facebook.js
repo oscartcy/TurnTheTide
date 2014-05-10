@@ -1,3 +1,5 @@
+var fbLogin = false;
+
 (function($){
     var app_ID = '709747785734162';
     window.fbAsyncInit = function() {
@@ -39,6 +41,7 @@
         if( response.status != 'connected' ) {
             login(loginCallback);
         } else {
+            fbLogin = true;
             //login success
             getMe(function(){
                 serverLogin();
