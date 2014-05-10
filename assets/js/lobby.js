@@ -203,7 +203,7 @@ function getRandomInt(min, max) {
     		var loadPlayerInfo = function() {
     			var div = player_div;
 
-    			return (function(name, picture) {
+    			return (function(picture) {
     				div.find('img').attr('src', picture);
 	    		});
 	    	};
@@ -314,8 +314,8 @@ function getRandomInt(min, max) {
     		var loadPlayerInfo = function() {
     			var div = playerDiv;
 
-    			return (function(name, picture) {
-    				div.find('p').text(name);
+    			return (function(picture) {
+    				// div.find('p').text(name);
     				div.find('img').attr('src', picture);
 	    		});
 	    	};
@@ -360,9 +360,9 @@ function loadPlayerInfoFromFb(fbid, callback) {
 		FB.Event.subscribe('auth.statusChange', load);
 
 	function load(){
-		FB.api('/'+fbid, {fields: 'name,picture.width(100).height(100)'}, function(response){
+		FB.api('/'+fbid, {fields: 'picture.width(100).height(100)'}, function(response){
 			if( !response.error ) {
-				return callback(response.name, response.picture.data.url);
+				return callback(response.picture.data.url);
 			} else {
 				console.error('fb api error: ', response);
 			}
