@@ -203,7 +203,7 @@ function getRandomInt(min, max) {
     		var loadPlayerInfo = function() {
     			var div = player_div;
 
-    			return (function(picture) {
+    			return (function(name, picture) {
     				div.find('img').attr('src', picture);
 	    		});
 	    	};
@@ -314,8 +314,8 @@ function getRandomInt(min, max) {
     		var loadPlayerInfo = function() {
     			var div = playerDiv;
 
-    			return (function(picture) {
-    				// div.find('p').text(name);
+    			return (function(name, picture) {
+    				div.find('p').text(name);
     				div.find('img').attr('src', picture);
 	    		});
 	    	};
@@ -354,18 +354,29 @@ function getRandomInt(min, max) {
 })(jQuery);
 
 function loadPlayerInfoFromFb(fbid, callback) {
-	if(fbLogin)
-		load();
-	else
-		FB.Event.subscribe('auth.statusChange', load);
+	// if(fbLogin)
+	// 	load();
+	// else
+	// 	FB.Event.subscribe('auth.statusChange', load);
 
-	function load(){
-		FB.api('/'+fbid, {fields: 'picture.width(100).height(100)'}, function(response){
-			if( !response.error ) {
-				return callback(response.picture.data.url);
-			} else {
-				console.error('fb api error: ', response);
-			}
-		});
-	}
+	// function load(){
+	// 	FB.api('/'+fbid, {fields: 'picture.width(100).height(100)'}, function(response){
+	// 		if( !response.error ) {
+	// 			return callback(response.picture.data.url);
+	// 		} else {
+	// 			console.error('fb api error: ', response);
+	// 		}
+	// 	});
+	// }
+	$.get("http://graph.facebook.com/{0}".format(fbid))
+		.done(function(res) {
+			var name;
+
+			if(res.name)
+				name = res.name;
+
+			var picture = "http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid);
+			callback(name, picture);
+		})
+	callback("http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid));
 }
