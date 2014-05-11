@@ -52,6 +52,20 @@ var fbLogin = false;
             //         });
             //     });
             // });
+
+            getPermissions(function() {
+                if(hasPermission('user_friends')) {
+                    getFriends(renderFriendList);
+                } else {
+                    console.log('no user_friends permission, reRequest');
+
+                    reRequest('user_friends', function() {
+                        getPermissions(function() {
+                            getFriends(renderFriendList);
+                        })
+                    })
+                }
+            })
         }
     }
 
@@ -105,9 +119,11 @@ var fbLogin = false;
     }
 
     function getFriends(callback) {
-        FB.api('/me/friends', {fields: 'id,name,first_name,picture.width(150).height(150)'}, function(response){
+        FB.api('/me/friends', {fields: 'id,name,first_name,picture.width(100).height(100)'}, function(response){
             if(response && !response.error) {
-                fbUserInfo.friends = response;
+                //lazy implementation
+                //if friends are more than the default 5000 limit, should check paging parameter to get the whole list
+                fbUserInfo.friends = response.data;
                 callback();
                 console.log("getFriends ok");
                 console.log("number of friends = " + JSON.stringify(fbUserInfo.friends));
@@ -127,6 +143,48 @@ var fbLogin = false;
                 console.error('/me/permissions', response);
             }
         });
+    }
+
+    function hasPermission(permission) {
+        for( var i in fbUserInfo.permissions ) {
+            if(fbUserInfo.permissions[i].permission == permission && fbUserInfo.permissions[i].status == 'granted' ) 
+            return true;
+        }
+
+        return false;
+    }
+
+    function renderFriendList() {
+        console.log('firend list: ', fbUserInfo.friends);
+
+        var friends = fbUserInfo.friends;
+        var rank_table = $("#rank_table");
+
+        for(var i in friends) {
+            var friend = friends[i];
+
+            var div = $("<div />", {
+                class: 'column_2'
+            }).appendTo(rank_table);
+
+            $('<h5 />', {
+                text: friend.first_name, 
+                class: 'text center bold color theme'
+            }).appendTo(div);
+
+            $('<img />', {
+                src: friend.picture.data.url
+            }).appendTo(div);
+
+            $('<h6 />', {
+                text: 100,
+                class: 'text center'
+            }).appendTo(div);
+        }
+    }
+
+    function reRequest(scope, callback) {
+        FB.login(callback, { scope: scope, auth_type:'rerequest'});
     }
 
 })(jQuery);

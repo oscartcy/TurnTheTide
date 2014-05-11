@@ -374,8 +374,8 @@ function loadPlayerInfoFromFb(fbid, callback) {
 		.done(function(res) {
 			var name = "";
 
-			if(res.name)
-				name = res.name;
+			if(res.first_name)
+				name = res.first_name;
 
 			var picture = "http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid);
 			callback(name, picture);
