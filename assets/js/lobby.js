@@ -12,6 +12,7 @@ function getRandomInt(min, max) {
 	//main//
 	init();
 	refreshGameRoomList();
+	searchRm();
 	//end of main
 
 	function init() {
@@ -331,5 +332,40 @@ function getRandomInt(min, max) {
 
     	// $("#gameRoom").addClass('hide');
     }
+	
+	
+	function searchRm(){
+		var search_rm_txt = $("#search_rm_txt");
+		search_rm_txt.keyup(function(){
+			//need to handle when the text i null 
+			//if the text is null all rm should been shown
+			socket.post('/GameRoom/search',
+				{
+					query: search_rm_txt.val()
+				},
+				
+				
+				
+				function(res) {
+					if(res.error){
+						console.log(res.error);
+						refreshGameRoomList();
+					}
+					else{
+						console.log("query is:"+search_rm_txt.val());
+						//console.log("the response is:"+JSON.stringify(res));
+						//console.log("testing:"+res.rooms[0].size);
+						$("#gameRoomList").empty();
+						for(var i=0; i<res.rooms.length; i++){
+							addGameRoomToList(res.rooms[i]);
+							console.log("successful");
+						}
+					}
+				});
+				
+				
+				
+		});
+	}
 
 })(jQuery);

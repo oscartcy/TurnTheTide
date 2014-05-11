@@ -146,12 +146,12 @@
 	/*margin: 0px;*/
 }
 
-#search, 
+#search_rm_txt, 
 #submit {
     float: left;
 }
 
-#search {
+#search_rm_txt {
     padding: 5px 9px;
     height: 23px;
     width: 380px;
