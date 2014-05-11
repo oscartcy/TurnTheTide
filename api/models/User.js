@@ -10,7 +10,8 @@ module.exports = {
 
   attributes: {
     fbid: 'string',
-    score: 'integer'
+    score: 'integer',
+    status: 'string'
   }
 
 };

@@ -28,20 +28,46 @@ module.exports = {
                     return res.json({ error: err });
 
                 if(user) {
+                    req.session.user = user.id;
+                    user.status = 'online';
+                    user.save(function(err) {
+                        console.log(err);
+                    });
+
                     return res.json({ user: user });
                 } else {
                     User.create({
                         fbid: fbid,
-                        score: 0
+                        score: 0,
+                        status: 'online'
                     }).done(function(err, user) {
                         if(err)
                             return res.json({ error: err });
+                        req.session.user = user.id;
                         return res.json({ user: user });
                     });
                 }
             });
     },
 
+    status: function(req, res) {
+        var fbid = req.param('fbid');
+
+        if(!fbid)
+            return res.json({ error: 'fbid not provided'});
+
+        User.findOneByFbid(fbid)
+            .done(function(err, user) {
+                if(err)
+                    return res.json({ error: err });
+
+                if(user) {
+                    return res.json({ status: user.status });
+                } else {
+                    return res.json({ error: 'user not found'});
+                }
+            })
+    },
 
 
     /**

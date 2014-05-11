@@ -56,7 +56,7 @@
 
  	index: function(req, res) {
  		//console.log("In GameRoom index");
- 		GameRoom.subscribe(req.socket);
+ 		// GameRoom.subscribe(req.socket);
  		GameRoom.find()
  		.done(function(err, rooms) {
  			res.json('rooms', rooms);

@@ -180,6 +180,27 @@ var fbLogin = false;
                 text: 100,
                 class: 'text center'
             }).appendTo(div);
+
+            socket.post('/User/status',
+                {
+                    fbid: friend.id
+                },
+                updateStatus()
+            );
+
+            //closure to protect the div variable
+            function updateStatus() {
+                var div = "some div here";
+                var id = friend.id;
+
+                return (function(res) {
+                    if(res.error)
+                        console.log(res);
+                    else {
+                        console.log(id + ' status: ', res.status)
+                    }
+                });
+            }
         }
     }
 
