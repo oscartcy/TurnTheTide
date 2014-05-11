@@ -276,7 +276,8 @@
             if(roomid == -1) {
                 GameRoom.create({
                     players: "[]",
-                    size: 5 
+                    size: 5 ,
+                    name: 'Game Room'
                 }).done(function(err, room) {
                     if(err)
                         return res.json({ error: err});

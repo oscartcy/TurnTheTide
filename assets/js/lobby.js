@@ -18,8 +18,8 @@ function getRandomInt(min, max) {
 	function main() {
 		init();
 		refreshGameRoomList();
+		searchRm();
 	}
-	
 	//end of main
 
 	function init() {
@@ -100,7 +100,7 @@ function getRandomInt(min, max) {
 
                 // $("#gameRoomSelection").removeClass('active');
                 // createRoomStartBtn.off('click');
-                TukTuk.Modal.hide();
+                // TukTuk.Modal.hide();
 
                 socket.post('/GameRoom/create',
                     {
@@ -108,7 +108,25 @@ function getRandomInt(min, max) {
                         name: name
                     },
                     function(res) {
-                        console.log("create room response: ", res);
+                    	console.log("create room response: ", res);
+
+                    	if(res.error)
+                    		console.log(res);
+                    	else {
+	                    	var room = res;
+
+	                    	socket.post('/GameRoom/join/' + room.id,
+	                    		{ playerId: playerId },
+	                    		function(res) {
+	                    			if(res.error) {
+	                    				console.log(res.error);
+	                    			} else {
+	                    				console.log("Join Game Room response: ", res);
+
+	                    				joinGameRoom(res);
+	                    			}
+	                    		});
+	                    }
                     });
 
             });
@@ -177,8 +195,7 @@ function getRandomInt(min, max) {
 						console.log(res.error);
 					} else {
 						console.log("Join Game Room response: ", res);
-
-						TukTuk.Modal.show('gameRoom');
+						
 						joinGameRoom(res);
 					}
 				});
@@ -255,6 +272,8 @@ function getRandomInt(min, max) {
 	}
 
 	function joinGameRoom(room) {
+		TukTuk.Modal.show('gameRoom');
+
 		$("#gameRoomName").text(room.name);
 
 		$("#gameRoomStartBtn").prop("disabled", true);
@@ -352,6 +371,41 @@ function getRandomInt(min, max) {
 
     	// $("#gameRoom").addClass('hide');
     }
+	
+	
+	function searchRm(){
+		var search_rm_txt = $("#search_rm_txt");
+		search_rm_txt.keyup(function(){
+			//need to handle when the text i null 
+			//if the text is null all rm should been shown
+			socket.post('/GameRoom/search',
+				{
+					query: search_rm_txt.val()
+				},
+				
+				
+				
+				function(res) {
+					if(res.error){
+						console.log(res.error);
+						refreshGameRoomList();
+					}
+					else{
+						console.log("query is:"+search_rm_txt.val());
+						//console.log("the response is:"+JSON.stringify(res));
+						//console.log("testing:"+res.rooms[0].size);
+						$("#gameRoomList").empty();
+						for(var i=0; i<res.rooms.length; i++){
+							addGameRoomToList(res.rooms[i]);
+							console.log("successful");
+						}
+					}
+				});
+				
+				
+				
+		});
+	}
 
 })(jQuery);
 
