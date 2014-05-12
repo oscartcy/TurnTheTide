@@ -1,4 +1,5 @@
 var fbLogin = false;
+var fbUserInfo = {};
 
 (function($){
     var app_ID = '709747785734162';
@@ -13,7 +14,7 @@ var fbLogin = false;
     FB.Event.subscribe('auth.authResponseChange', onAuthResponseChange);
     FB.Event.subscribe('auth.statusChange', onStatusChange);
 
-    var fbUserInfo = {};
+    
 
     function login(callback) {
         FB.login(callback, {
@@ -115,6 +116,8 @@ var fbLogin = false;
                         $("#userScore").html("Score: " + fbUserInfo.me.score);
                     }
                 });
+				
+	
         }
     }
 
@@ -154,84 +157,86 @@ var fbLogin = false;
         return false;
     }
 
-    function renderFriendList() {
-        console.log('firend list: ', fbUserInfo.friends);
 
-        var friends = fbUserInfo.friends;
-        var rank_table = $("#rank_table");
-
-        for(var i in friends) {
-            var friend = friends[i];
-			
-			//to make the rank table scollable horizontally
-			var rank_tb_width = $("#rank_table").width();
-			if(rank_tb_width >= 700){
-				rank_tb_width += 138;
-				$("#rank_table").width(rank_tb_width);
-				console.log("width: "+ $("#rank_table").width());
-			}
-				
-            var div = $("<div />", {
-                class: 'column_2',
-				id:friend.id
-            }).appendTo(rank_table);
-			
-			
-			var status_circle = $('<span/>',{
-				class: 'icon circle color_gray'
-			});
-			
-			var name = $('<h6 />', {
-                text: friend.first_name,
-                class: 'text center bold color theme'
-            });
-			
-			name.append("&nbsp;");
-			status_circle.appendTo(name);
-			name.appendTo(div);
-			
-			
-            $('<img />', {
-                src: friend.picture.data.url
-            }).appendTo(div);
-			
-
-            $('<h6 />', {
-                text: 100,
-                class: 'text center'
-            }).appendTo(div);
-			
-            socket.post('/User/status',
-                {
-                    fbid: friend.id
-                },
-                updateStatus()
-            );
-
-            //closure to protect the div variable
-			//three status: online, offline, in game
-            function updateStatus() {
-                var div = "some div here";
-				var fd = friend;
-
-                return (function(res) {
-                    if(res.error)
-                        console.log("error: "+res.error);
-                    else {
-						if(res.status == "offline"){
-							$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
-						}else{
-							$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_green");
-						}
-                        console.log("name: "+ fd.first_name + ", id:" + fd.id + ', status: ', res.status);
-                    }
-                });
-            }
-        }
-    }
 
     function reRequest(scope, callback) {
         FB.login(callback, { scope: scope, auth_type:'rerequest'});
     }
 
 })(jQuery);
+
+function renderFriendList() {
+	console.log('firend list: ', fbUserInfo.friends);
+
+	var friends = fbUserInfo.friends;
+	var rank_table = $("#rank_table");
+
+	for(var i in friends) {
+		var friend = friends[i];
+		
+		//to make the rank table scollable horizontally
+		var rank_tb_width = $("#rank_table").width();
+		if(rank_tb_width >= 700){
+			rank_tb_width += 138;
+			$("#rank_table").width(rank_tb_width);
+			console.log("width: "+ $("#rank_table").width());
+		}
+			
+		var div = $("<div />", {
+			class: 'column_2',
+			id:friend.id
+		}).appendTo(rank_table);
+		
+		
+		var status_circle = $('<span/>',{
+			class: 'icon circle color_gray'
+		});
+		
+		var name = $('<h6 />', {
+			text: friend.first_name,
+			class: 'text center bold color theme'
+		});
+		
+		name.append("&nbsp;");
+		status_circle.appendTo(name);
+		name.appendTo(div);
+		
+		
+		$('<img />', {
+			src: friend.picture.data.url
+		}).appendTo(div);
+		
+
+		$('<h6 />', {
+			text: 100,
+			class: 'text center'
+		}).appendTo(div);
+		
+		socket.post('/User/status',
+			{
+				fbid: friend.id
+			},
+			updateStatus()
+		);
+
+		//closure to protect the div variable
+		//three status: online, offline, in game
+		function updateStatus() {
+			var div = "some div here";
+			var fd = friend;
+
+			return (function(res) {
+				if(res.error)
+					console.log("error: "+res.error);
+				else {
+					if(res.status == "offline"){
+						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
+					}else{
+						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_green");
+					}
+					console.log("name: "+ fd.first_name + ", id:" + fd.id + ', status: ', res.status);
+				}
+			});
+		}
+	}
+}

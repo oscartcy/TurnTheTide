@@ -84,6 +84,20 @@ function getRandomInt(min, max) {
 
 				}
 			});
+			
+			//message that your friends have logged in
+			socket.on('user_login',function(res){
+				console.log("A fd has logged in");
+				$("#rank_table").empty();
+				renderFriendList();
+			});
+			
+			//message that your friends have logged out
+			socket.on('user_logout',function(res){
+				console.log("A fd has logged out");
+				$("#rank_table").empty();
+				renderFriendList();
+			});
 		};
 
 		function initCreateRoomButton() {

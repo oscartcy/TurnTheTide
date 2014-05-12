@@ -354,7 +354,8 @@
 
     search: function(req, res) {
         var query = req.param('query');
-
+		
+		
         if(!query)
             return res.json({ error: "query not provided" });
 
@@ -365,6 +366,9 @@
 
                 return res.json({ rooms: rooms });
             });
+			
+		
+
     },
     /**
      * Overrides for the settings in `config/controllers.js`

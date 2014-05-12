@@ -33,6 +33,14 @@ module.exports = {
                     user.save(function(err) {
                         console.log(err);
                     });
+					
+					//emit login message to your friends
+					var sockets = GameRoom.subscribers();
+					for(var i in sockets) {
+						console.log(fbid+" has logged in");
+						var socket = sockets[i];
+						socket.emit('user_login', {});
+					}
 
                     return res.json({ user: user });
                 } else {
@@ -44,6 +52,15 @@ module.exports = {
                         if(err)
                             return res.json({ error: err });
                         req.session.user = user.id;
+						
+						//emit login message to your friends
+						var sockets = GameRoom.subscribers();
+						for(var i in sockets) {
+							console.log(fbid+" has logged in");
+							var socket = sockets[i];
+							socket.emit('user_login', {});
+						}
+						
                         return res.json({ user: user });
                     });
                 }
