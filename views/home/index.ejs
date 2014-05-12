@@ -3,17 +3,17 @@
 		<div class="column_4 radius bck light padding-top padding-bottom row2 left_col">
 		
 			<div class="pro_file_div">
-				<img src="/images/user.gif" class="pro_pic">
+				<img src="/images/user.jpg" class="pro_pic">
 			</div>
 			<div class="pro_name">
-				<h6 class="color normal text bold" id="user_name">Name</h6>
-				<h6 class="color normal text bold">Score</h6>
+				<h6 class="color normal text bold" id="userName">Name</h6>
+				<h6 class="color normal text bold" id="userScore">Score</h6>
 			</div>
 			
 			<br><br><br>
 			
 			<div class="margin-top" style="height:408px;">
-				<button id="matchButton" data-tuktuk-modal="gameRoom" class="match_btn">Match</button><br><br><br>
+				<button id="matchButton" class="match_btn">Match</button><br><br><br>
 				<!-- <button id="createRoomButton" data-tuktuk-modal="big_modal" class="cre_rm_btn">Create Room</button> -->
 				<button data-tuktuk-modal="gameRoomSelection" class="cre_rm_btn" id="createRoomButton">Create Room</button>
 			</div>
@@ -21,9 +21,8 @@
 		
 		<div class="column_8 radius bck light padding-top padding-bottom row2 right_col">
 			<div class="row" style="margin: 0px;">
-				<form id="searchbox" action="">
-					<input id="search" type="text" placeholder="Type here">
-					<input id="submit" type="submit" value="Search">
+				<form id="searchbox" name="form">
+					<input type="text" name="default" id="search_rm_txt" placeholder="Search Room Here">
 				</form>
 			</div>
 			<div id="gameRoomList" class="row">
@@ -33,20 +32,8 @@
 	</div>
 
 	<div class="row row3">
-		<div id="ranking" class="column_12 radius bck light padding-top padding-bottom row3">
-			<div id="rank_table" class="row">
-				<div class="empty_div"></div>
-				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-				<div class="empty_div"></div>
-				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-				<div class="empty_div"></div>
-				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-				<div class="empty_div"></div>
-				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-				<div class="empty_div"></div>
-				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
-				<div class="empty_div"></div>
-				<div class="column_1 fd_div"><h6>Rank</h6><img src="/images/profile.jpg"><h6>Score</h6></div>
+		<div id="ranking" class="column_12 radius bck light row3">
+			<div id="rank_table" class="row padding-left padding-right">
 			</div>
 		</div>
 	</div>
@@ -95,23 +82,23 @@
 		<p id="gameRoomCount">4/5</p>
 		<div class='row'>
 			<div id="gameRoomPlayer1" class="gameRoomPlayer column_2">
-				<img src="images/user.gif" />
+				<img src="images/no_user.jpg" />
 				<p id="playerName" class="text center">Player</p>
 			</div>
 			<div id="gameRoomPlayer2" class="gameRoomPlayer column_2">
-				<img src="images/user.gif" />
+				<img src="images/user.jpg" />
 				<p id="playerName" class="text center">Player</p>
 			</div>
 			<div id="gameRoomPlayer3" class="gameRoomPlayer column_2">
-				<img src="images/user.gif" />
+				<img src="images/user.jpg" />
 				<p id="playerName" class="text center">Player</p>
 			</div>
 			<div id="gameRoomPlayer4" class="gameRoomPlayer column_2">
-				<img src="images/user.gif" />
+				<img src="images/user.jpg" />
 				<p id="playerName" class="text center">Player</p>
 			</div>
 			<div id="gameRoomPlayer5" class="gameRoomPlayer column_2">
-				<img src="images/user.gif" />
+				<img src="images/user.jpg" />
 				<p id="playerName" class="text center">Player</p>
 			</div>
 		</div>

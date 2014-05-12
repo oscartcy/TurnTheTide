@@ -19,6 +19,8 @@ module.exports.sockets = {
     // By default: do nothing
     // This is a good place to subscribe a new socket to a room, inform other users that
     // someone new has come online, or any other custom socket.io logic
+
+    GameRoom.subscribe(socket);
   },
 
   // This custom onDisconnect function will be run each time a socket disconnects
@@ -26,6 +28,22 @@ module.exports.sockets = {
 
     // By default: do nothing
     // This is a good place to broadcast a disconnect message, or any other custom socket.io logic
+    if(session.user) {
+      console.log('disconnect session', session.user);
+
+      User.findOne(session.user).done(function(err, user) {
+        if(err)
+          console.log('disconnect find user error: ', err);
+
+        user.status = 'offline';
+        user.save(function(err) {
+          if(err)
+            console.log(err);
+        });
+      });
+    }
+    else
+      console.log('no user session');
   },
 
 

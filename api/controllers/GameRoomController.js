@@ -56,7 +56,7 @@
 
  	index: function(req, res) {
  		//console.log("In GameRoom index");
- 		GameRoom.subscribe(req.socket);
+ 		// GameRoom.subscribe(req.socket);
  		GameRoom.find()
  		.done(function(err, rooms) {
  			res.json('rooms', rooms);
@@ -96,6 +96,15 @@
 
 				GameRoom.subscribe(req.socket, room);
 				GameRoom.publishUpdate(roomid, { room: room });
+
+				//also tell all sockets to update room list
+				var sockets = GameRoom.subscribers();
+
+				for(var i in sockets) {
+					var socket = sockets[i];
+					//without room info, boardcast update
+					socket.emit('message', { model: 'gameroom', verb: 'update'});
+				}
 
 				if(players.length == room.size)
 					fireReadyToStart(room);
@@ -148,6 +157,15 @@
 
 				GameRoom.unsubscribe(req.socket, room);
 				GameRoom.publishUpdate(roomid, { room: room});
+
+				//also tell all sockets to update room list
+				var sockets = GameRoom.subscribers();
+
+				for(var i in sockets) {
+					var socket = sockets[i];
+					//without room info, boardcast update
+					socket.emit('message', { model: 'gameroom', verb: 'update'});
+				}
 
 				if(players.length <= 0) {
 					room.destroy(function(err) {
@@ -258,7 +276,8 @@
             if(roomid == -1) {
                 GameRoom.create({
                     players: "[]",
-                    size: 5 
+                    size: 5 ,
+                    name: 'Game Room'
                 }).done(function(err, room) {
                     if(err)
                         return res.json({ error: err});
