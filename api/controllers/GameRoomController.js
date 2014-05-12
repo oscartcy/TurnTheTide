@@ -36,6 +36,9 @@
  			if(err)
  				return res.json({ error: err});
 
+ 			if(!room)
+ 				return res.json({ error: 'room not created'});
+
  			var sockets = GameRoom.subscribers();
 
  			for(var i in sockets) {
@@ -59,6 +62,12 @@
  		// GameRoom.subscribe(req.socket);
  		GameRoom.find()
  		.done(function(err, rooms) {
+ 			if(err)
+ 				return res.json({ error: err});
+
+ 			if(!rooms)
+ 				return res.json({ error: 'no rooms found'});
+
  			res.json('rooms', rooms);
  		});
  	},
@@ -75,6 +84,9 @@
  		function findRoomCallback(err, room) {
  			if(err)
  				return res.json({ error: err});
+
+ 			if(!room)
+ 				return res.json({ error: 'room not found'});
 
  			var players = JSON.parse(room.players);
 
@@ -140,6 +152,9 @@
 			if(err)
 				return res.json({ error: err });
 
+			if(!room)
+				return res.json({ error: "room not found"});
+
 			var players = JSON.parse(room.players);
 
 			var index = players.indexOf(playerId);
@@ -198,6 +213,9 @@
 		.done(function(err, room) {
 			if(err)
 				return res.json({ error: err });
+
+			if(!room)
+				return res.json({ error: "room not found"});
 
 			var players = JSON.parse(room.players);
 
@@ -309,6 +327,9 @@
  		function findRoomCallback(err, room) {
  			if(err)
  				return res.json({ error: err});
+
+ 			if(!room)
+ 				return res.json({ error: "no room found"});
 
  			var players = JSON.parse(room.players);
 
