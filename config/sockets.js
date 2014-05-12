@@ -36,10 +36,19 @@ module.exports.sockets = {
           console.log('disconnect find user error: ', err);
 
         user.status = 'offline';
+		
         user.save(function(err) {
           if(err)
             console.log(err);
-        });
+		
+			//emit logout message to your friends
+			var sockets = GameRoom.subscribers();
+			for(var i in sockets) {
+				console.log(user.fbid+" has logged out");
+				var temp_socket = sockets[i];
+				temp_socket.emit('user_logout', {});
+			}
+		});
       });
     }
     else
