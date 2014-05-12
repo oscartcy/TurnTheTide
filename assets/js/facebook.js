@@ -162,25 +162,45 @@ var fbLogin = false;
 
         for(var i in friends) {
             var friend = friends[i];
-
+			
+			//to make the rank table scollable horizontally
+			var rank_tb_width = $("#rank_table").width();
+			if(rank_tb_width >= 700){
+				rank_tb_width += 138;
+				$("#rank_table").width(rank_tb_width);
+				console.log("width: "+ $("#rank_table").width());
+			}
+				
             var div = $("<div />", {
-                class: 'column_2'
+                class: 'column_2',
+				id:friend.id
             }).appendTo(rank_table);
-
-            $('<h5 />', {
-                text: friend.first_name, 
+			
+			
+			var status_circle = $('<span/>',{
+				class: 'icon circle color_gray'
+			});
+			
+			var name = $('<h6 />', {
+                text: friend.first_name,
                 class: 'text center bold color theme'
-            }).appendTo(div);
-
+            });
+			
+			name.append("&nbsp;");
+			status_circle.appendTo(name);
+			name.appendTo(div);
+			
+			
             $('<img />', {
                 src: friend.picture.data.url
             }).appendTo(div);
+			
 
             $('<h6 />', {
                 text: 100,
                 class: 'text center'
             }).appendTo(div);
-
+			
             socket.post('/User/status',
                 {
                     fbid: friend.id
@@ -189,15 +209,21 @@ var fbLogin = false;
             );
 
             //closure to protect the div variable
+			//three status: online, offline, in game
             function updateStatus() {
                 var div = "some div here";
-                var id = friend.id;
+				var fd = friend;
 
                 return (function(res) {
                     if(res.error)
-                        console.log(res);
+                        console.log("error: "+res.error);
                     else {
-                        console.log(id + ' status: ', res.status)
+						if(res.status == "offline"){
+							$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
+						}else{
+							$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_green");
+						}
+                        console.log("name: "+ fd.first_name + ", id:" + fd.id + ', status: ', res.status);
                     }
                 });
             }
