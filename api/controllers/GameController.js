@@ -121,7 +121,7 @@ module.exports = {
 						socket.emit('game', { status: 'endRound', round: result ,endCycle:endCycFlag});
 					}
 					
-					if (endCycFlag)
+					if (endCycFlag && room.cycle!=room.playerNumber)
 					{
 						extraresult=setNextCycle(room);
 						room.save(function(err) {
@@ -129,10 +129,25 @@ module.exports = {
 								console.log(err);
 								return res.json({ error: err});
 							}});
+						setTimeout(callback, 9000);
+						function callback()
+						{
+							for(var i in sockets) {
+								var socket = sockets[i];
+								socket.emit('game', { status: 'endCycle', cycle:extraresult});
+							}	
+						}						
+					}
+					else
+					{
+						result=endGame(room);
+						//destroy room
+						//no need to save
 						for(var i in sockets) {
 							var socket = sockets[i];
-							socket.emit('game', { status: 'endCycle', cycle:extraresult});
-						}										
+							socket.emit('game', { status: 'endGame', gameResult:result});
+						}
+						
 					}
 				}
 				
@@ -486,3 +501,21 @@ function computeRound(room)
 	
 	
 }
+
+function endGame(room)
+{
+	var result={
+		player:[],
+		mark:[]
+	}
+	var players=JSON.parse(room.players);
+	for (var i=0;i<players.length;i++)
+	{
+		result.player.push(players[i].Name);
+		players[i].Mark=players[i].Mark+players[i].RemainingLife;
+		result.mark.push(players[i].Mark);
+	}
+	room.players = JSON.stringify(players);
+	return result;
+}
+

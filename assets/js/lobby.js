@@ -67,9 +67,22 @@ function getRandomInt(min, max) {
 				{
 					console.log(res.round);
 					//false= this player not dead
-					if (!displayEndTurn(res.round,res.endCycle))
-						setHandListener(gameID);
+					displayEndTurn(res.round,res.endCycle);
+					// if (!displayEndTurn(res.round,res.endCycle) && !res.endCycle)
+						// window.setTimeout(	setHandListener(gameID),13000);
+				}
 
+				if (res.status=='endCycle')
+				{
+					//window.setTimeout(	showNewCycle(res.cycle),9000);
+					showNewCycle(res.cycle);
+					
+					//if room master
+				}
+				
+				if (res.status=='endGame')
+				{
+					window.setTimeout(	function(){showEndGame(res.gameResult)},9000);
 				}
 			});
 		};
