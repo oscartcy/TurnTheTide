@@ -208,11 +208,12 @@ function renderFriendList() {
 		
 
 		$('<h6 />', {
+			id: "score",
 			text: 100,
 			class: 'text center'
 		}).appendTo(div);
 		
-		socket.post('/User/status',
+		socket.post('/User/show',
 			{
 				fbid: friend.id
 			},
@@ -229,12 +230,21 @@ function renderFriendList() {
 				if(res.error)
 					console.log("error: "+res.error);
 				else {
-					if(res.status == "offline"){
+					var user = res.user;
+					
+					if(user.status == "offline")
 						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
-					}else{
+					if(user.status == "online")
 						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_green");
-					}
-					console.log("name: "+ fd.first_name + ", id:" + fd.id + ', status: ', res.status);
+					if(user.status == "inGame")
+						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_orange");
+					
+					console.log("name: "+ fd.first_name + ", id:" + fd.id + ', status: ', user.status);
+					
+					//update score from models
+					console.log("The score is: " + $('#'+ fd.id+' #score').html());
+					$('#'+ fd.id+' #score').html(user.score);
+					console.log("The score is: " + $('#'+ fd.id+' #score').html());
 				}
 			});
 		}

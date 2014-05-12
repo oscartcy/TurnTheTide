@@ -67,7 +67,7 @@ module.exports = {
             });
     },
 
-    status: function(req, res) {
+    show: function(req, res) {
         var fbid = req.param('fbid');
 
         if(!fbid)
@@ -79,7 +79,7 @@ module.exports = {
                     return res.json({ error: err });
 
                 if(user) {
-                    return res.json({ status: user.status });
+                    return res.json({ user: user });
                 } else {
                     return res.json({ error: 'user not found'});
                 }
