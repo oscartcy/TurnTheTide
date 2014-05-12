@@ -38,7 +38,7 @@ var fbLogin = false;
         if( response.status != 'connected' ) {
             login(loginCallback);
         } else {
-            fbLogin = true;
+            
             //login success
             getMe(function(){
                 serverLogin();
@@ -113,6 +113,9 @@ var fbLogin = false;
                         $(".pro_pic").attr("src", fbUserInfo.me.picture.data.url);
                         $("#userName").html("Name: " + fbUserInfo.me.name);
                         $("#userScore").html("Score: " + fbUserInfo.me.score);
+
+                        fbLogin = true;
+                        $(document).trigger('fblogin');
                     }
                 });
         }

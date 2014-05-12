@@ -19,6 +19,7 @@ function getRandomInt(min, max) {
 		init();
 		refreshGameRoomList();
 		searchRm();
+		checkIfInvited();
 	}
 	//end of main
 
@@ -401,10 +402,36 @@ function getRandomInt(min, max) {
 						}
 					}
 				});
-				
-				
-				
 		});
+	}
+
+	function checkIfInvited() {
+		//logic here
+
+		//provide roomid if it is invited by others
+		var roomid = 1;
+
+		if(roomid) {
+			if(fbLogin)
+				join();
+			else
+				// FB.Event.subscribe('auth.statusChange', join);
+				$(document).on('fblogin', join);
+		}
+
+		function join() {
+			socket.post('/GameRoom/join/' + roomid,
+				{ playerId: playerId },
+				function(res) {
+					if(res.error) {
+						console.log(res.error);
+					} else {
+						console.log("Join Game Room response: ", res);
+						
+						joinGameRoom(res);
+					}
+				});
+		}
 	}
 
 })(jQuery);
