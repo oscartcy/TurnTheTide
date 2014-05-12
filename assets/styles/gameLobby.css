@@ -172,5 +172,16 @@
 	height:23px;
 }
 
+#loading {
+	background: black;
+	opacity: 0.5;
+	height: 100%;
+	width: 100%;
+}
 
-
+#loading img {
+	height: 300px;
+	width: 300px;
+	margin: auto;
+	display: block;
+}

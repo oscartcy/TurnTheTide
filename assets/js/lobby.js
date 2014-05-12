@@ -26,6 +26,7 @@ function getRandomInt(min, max) {
 		initSocketListen();
 		initCreateRoomButton();
 		initMatchButton();
+		initLoadingScreen();
 
 		function initSocketListen(){
 			socket.on('message', function(res) {
@@ -166,6 +167,12 @@ function getRandomInt(min, max) {
 	    					joinGameRoom(res);
 	    			});
 	    	}
+	    }
+
+	    function initLoadingScreen() {
+	    	$(document).on('fblogin', function() {
+	    		$("#loading").addClass('hide');
+	    	});
 	    }
 	}
 

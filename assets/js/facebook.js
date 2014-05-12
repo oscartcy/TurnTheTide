@@ -39,7 +39,7 @@ var fbUserInfo = {};
         if( response.status != 'connected' ) {
             login(loginCallback);
         } else {
-            fbLogin = true;
+            // fbLogin = true;
             //login success
             getMe(function(){
                 serverLogin();
@@ -114,6 +114,9 @@ var fbUserInfo = {};
                         $(".pro_pic").attr("src", fbUserInfo.me.picture.data.url);
                         $("#userName").html("Name: " + fbUserInfo.me.name);
                         $("#userScore").html("Score: " + fbUserInfo.me.score);
+
+                        fbLogin = true;
+                        $(document).trigger('fblogin');
                     }
                 });
 				
@@ -139,7 +142,7 @@ var fbUserInfo = {};
     function getPermissions(callback) {
         FB.api('/me/permissions', function(response){
             if( !response.error ) {
-                fbUserInfo.permissions = response;
+                fbUserInfo.permissions = response.data;
                 console.log("getPermissions ok");
                 callback();
             } else {
