@@ -242,128 +242,7 @@ function getRandomInt(min, max) {
 	    }
 	}
 
-	function refreshGameRoomList() {
-		socket.get('/GameRoom',
-			"",
-			function (res) {
-				console.log("gameroom list", res);
-
-				$("#gameRoomList").empty();
-
-				$.each(res, function() {
-					addGameRoomToList(this);
-				});
-			});
-	}
-
-	function addGameRoomToList(room) {
-		var players = JSON.parse(room.players);
-    	var size = room.size;
-
-		var row_div_1 =$('<div/>',{
-			id: 'gameroom' + room.id,
-			class: 'row rm_row'
-		});
-		
-		var gameRoomName=$('<div/>',{
-			class: 'column_5'
-		});
-		gameRoomName.append("<h6 class=\"color theme text bold\">" + room.name + "</h6>");
-		
-		var join_button_div=$('<div/>',{
-			class:'column_2',
-		});
-		var join_button = $('<button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>');
-		join_button.on('click', function() {
-			socket.post('/GameRoom/join/' + room.id,
-				{ playerId: playerId },
-				function(res) {
-					if(res.error) {
-						console.log(res.error);
-					} else {
-						console.log("Join Game Room response: ", res);
-						
-						joinGameRoom(res);
-					}
-				});
-		});
-		join_button_div.append(join_button);
-		row_div_1.append(gameRoomName);
-		row_div_1.append(join_button_div);
-		
-		var row_div_2 =$('<div/>',{
-			class: 'row rm_row'
-		});
-
-    	var i;
-    	for(i = 0; i < players.length; i++) {
-    		var player = players[i];
-    		var player_div= $('<div/>', {
-    			class:'column_1',
-    		}).append("<img src=\"/images/user.jpg\">");
-
-    		row_div_2.append(player_div);
-
-    		var loadPlayerInfo = function() {
-    			var div = player_div;
-
-    			return (function(name, picture) {
-    				div.find('img').attr('src', picture);
-	    		});
-	    	};
-
-	    	loadPlayerInfoFromFb(player, loadPlayerInfo());
-    	}
-
-    	for(; i < room.size; i++) {
-    		var player_div= $('<div/>', {
-    			class:'column_1',
-    		}).append("<img src=\"/images/user.jpg\">");
-
-    		row_div_2.append(player_div);
-    	}
-
-		for(; i < 5; i++) {
-    		var player_div= $('<div/>', {
-    			class:'column_1',
-    		}).append("<img src=\"/images/no_user.jpg\">");
-
-    		row_div_2.append(player_div);
-    	}
-		
-		var spec_button_div=$('<div/>',{
-			class:'column_2',
-		});
-		var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
-		spec_button.on('click', function() {
-			
-			socket.post('/GameRoom/spectate/' + room.id,
-				{ },
-				function(res) {
-					if(res.error) {
-						console.log(res.error);
-					} else {
-					//	console.log(res);
-						console.log(res.room);
-						socket.post('/Game/spectate/' + res.room, 
-							{},
-							function(res) {
-								if(res.error)
-									console.log(res.error);
-								console.log(res.info);
-								spectateGame(res.info);
-							});													
-					}
-				});
-		});
-		spec_button_div.append(spec_button);
-
-		row_div_2.append(spec_button_div);
-
-		$("#gameRoomList").append(row_div_1);
-		$("#gameRoomList").append(row_div_2);
-		$("#gameRoomList").append("<br><br>");
-	}
+	
 
 	function joinGameRoom(room) {
 		TukTuk.Modal.show('gameRoom');
@@ -528,6 +407,129 @@ function getRandomInt(min, max) {
 	}
 
 })(jQuery);
+
+function refreshGameRoomList() {
+	socket.get('/GameRoom',
+		"",
+		function (res) {
+			console.log("gameroom list", res);
+
+			$("#gameRoomList").empty();
+
+			$.each(res, function() {
+				addGameRoomToList(this);
+			});
+		});
+}
+
+function addGameRoomToList(room) {
+	var players = JSON.parse(room.players);
+	var size = room.size;
+
+	var row_div_1 =$('<div/>',{
+		id: 'gameroom' + room.id,
+		class: 'row rm_row'
+	});
+	
+	var gameRoomName=$('<div/>',{
+		class: 'column_5'
+	});
+	gameRoomName.append("<h6 class=\"color theme text bold\">" + room.name + "</h6>");
+	
+	var join_button_div=$('<div/>',{
+		class:'column_2',
+	});
+	var join_button = $('<button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>');
+	join_button.on('click', function() {
+		socket.post('/GameRoom/join/' + room.id,
+			{ playerId: playerId },
+			function(res) {
+				if(res.error) {
+					console.log(res.error);
+				} else {
+					console.log("Join Game Room response: ", res);
+					
+					joinGameRoom(res);
+				}
+			});
+	});
+	join_button_div.append(join_button);
+	row_div_1.append(gameRoomName);
+	row_div_1.append(join_button_div);
+	
+	var row_div_2 =$('<div/>',{
+		class: 'row rm_row'
+	});
+
+	var i;
+	for(i = 0; i < players.length; i++) {
+		var player = players[i];
+		var player_div= $('<div/>', {
+			class:'column_1',
+		}).append("<img src=\"/images/user.jpg\">");
+
+		row_div_2.append(player_div);
+
+		var loadPlayerInfo = function() {
+			var div = player_div;
+
+			return (function(name, picture) {
+				div.find('img').attr('src', picture);
+			});
+		};
+
+		loadPlayerInfoFromFb(player, loadPlayerInfo());
+	}
+
+	for(; i < room.size; i++) {
+		var player_div= $('<div/>', {
+			class:'column_1',
+		}).append("<img src=\"/images/user.jpg\">");
+
+		row_div_2.append(player_div);
+	}
+
+	for(; i < 5; i++) {
+		var player_div= $('<div/>', {
+			class:'column_1',
+		}).append("<img src=\"/images/no_user.jpg\">");
+
+		row_div_2.append(player_div);
+	}
+	
+	var spec_button_div=$('<div/>',{
+		class:'column_2',
+	});
+	var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
+	spec_button.on('click', function() {
+		
+		socket.post('/GameRoom/spectate/' + room.id,
+			{ },
+			function(res) {
+				if(res.error) {
+					console.log(res.error);
+				} else {
+					//	console.log(res);
+					console.log(res.room);
+					socket.post('/Game/spectate/' + res.room, 
+						{},
+						function(res) {
+							if(res.error)
+								console.log(res.error);
+							console.log(res.info);
+							spectateGame(res.info);
+						});													
+				}
+			});
+	});
+	spec_button_div.append(spec_button);
+
+	row_div_2.append(spec_button_div);
+
+	$("#gameRoomList").append(row_div_1);
+	$("#gameRoomList").append(row_div_2);
+	$("#gameRoomList").append("<br><br>");
+}
 
 function loadPlayerInfoFromFb(fbid, callback) {
 	// if(fbLogin)

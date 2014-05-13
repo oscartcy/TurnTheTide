@@ -42,6 +42,21 @@ else
 	setTides(info.currentTides);
 	setMyself(me);
 	setHandListener(info.id);
+	
+	var loadPlayerInfo = function() {
+
+		return (function(name, picture) {
+			$("#userPlayer").find('.userName').text(name);
+			var $img=$("<img class=myprofile>");
+			$img.attr('src', picture);
+			$("#userPlayer").find('.myprofile').append($img);
+			
+		});
+	};
+
+	loadPlayerInfoFromFb(playerId, loadPlayerInfo());
+	
+
 }
 
 function getMyself(players)
@@ -96,7 +111,10 @@ function setHandListener(id)
 									
 								// }
 							});
+			var num=($(this).parent().children().length-1)*65;
 			$(this).remove();
+			$(".myrow").css("width",num);
+			//$(".myrow").animate({"width":num});
 		});
 	});
 }
@@ -119,7 +137,10 @@ function setPlayerReady(playerId)
 		img.attr('src', "/images/card/w_back.jpg");	
 		$("#userPlayer>.weathercard").append(img);
 		var child=$(".hand>.row1").children();
+		var num=(child.length-1)*65;
+		$(".myrow").css("width",num);
 		$(child[0]).remove();
+		//$(".myrow").animate({"width":num});
 	}
 }
 function unsetHandListener()
@@ -155,7 +176,6 @@ function setTides(tideArray)
 
 function generatePlayer(name,pos,totalnumber,mark,life)
 {
-
 	if (pos==1)
 	{
 		var $player=$('<div class="otherPlayer playerLeft pos1"></div>');
@@ -336,7 +356,20 @@ function generatePlayer(name,pos,totalnumber,mark,life)
 		$("#GamePlaying").append($player);
 
 	}
+	
+	var loadPlayerInfo = function() {
+		var position = pos;
 
+		return (function(name, picture) {
+			$(".pos"+position).find('.name').text(name);
+			var $img=$("<img class=profile>");
+			$img.attr('src', picture);
+			$(".pos"+position).find('.profile').append($img);
+			
+		});
+	};
+
+	loadPlayerInfoFromFb(name, loadPlayerInfo());
 }
 
 function setMyself(me)
@@ -631,6 +664,8 @@ function setRound(round,player)
 
 function showNewCycle(cycle)
 {
+	$(".hand>.myrow").css("width, 780");
+	
 	for (var i=0;i<cycle.player.length;i++)
 	{
 		if ($("#"+cycle.player[i]).length!=0)
@@ -819,120 +854,6 @@ function destoryGame()
 		refreshGameRoomList();
 	$("#main").removeClass("hide");
 	
-	function refreshGameRoomList() {
-		socket.get('/GameRoom',
-			"",
-			function (res) {
-				console.log("gameroom list", res);
-
-				$("#gameRoomList").empty();
-
-				$.each(res, function() {
-					addGameRoomToList(this);
-				});
-			});
-	}
-	function addGameRoomToList(room) {
-		var row_div_1 =$('<div/>',{
-			id: 'gameroom' + room.id,
-			class: 'row rm_row'
-		});
-		
-		var gameRoomName=$('<div/>',{
-			class: 'column_5'
-		});
-		gameRoomName.append("<h6 class=\"color theme text bold\">" + room.name + "</h6>");
-		
-		var join_button_div=$('<div/>',{
-			class:'column_2',
-		});
-		var join_button = $('<button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>');
-		join_button.on('click', function() {
-			socket.post('/GameRoom/join/' + room.id,
-				{ playerId: playerId },
-				function(res) {
-					if(res.error) {
-						console.log(res.error);
-					} else {
-						console.log("Join Game Room response: ", res);
-
-						TukTuk.Modal.show('gameRoom');
-						joinGameRoom(res);
-					}
-				});
-		});
-		join_button_div.append(join_button);
-		row_div_1.append(gameRoomName);
-		row_div_1.append(join_button_div);
-		
-		var row_div_2 =$('<div/>',{
-			class: 'row rm_row'
-		});
-		var player_div_1=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_1.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_2=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_2.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_3=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_3.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_4=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_4.append("<img src=\"/images/profile.jpg\">");
-		
-		var player_div_5=$('<div/>',{
-			class:'column_1',
-		});
-		player_div_5.append("<img src=\"/images/profile.jpg\">");
-		
-		
-		
-		var spec_button_div=$('<div/>',{
-			class:'column_2',
-		});
-		var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
-		spec_button.on('click', function() {
-			
-			socket.post('/GameRoom/spectate/' + room.id,
-				{ },
-				function(res) {
-					if(res.error) {
-						console.log(res.error);
-					} else {
-					//	console.log(res);
-						console.log(res.room);
-						socket.post('/Game/spectate/' + res.room, 
-							{},
-							function(res) {
-								if(res.error)
-									console.log(res.error);
-								console.log(res.info);
-								spectateGame(res.info);
-							});													
-					}
-				});
-		});
-		spec_button_div.append(spec_button);
-
-		row_div_2.append(player_div_1);
-		row_div_2.append(player_div_2);
-		row_div_2.append(player_div_3);
-		row_div_2.append(player_div_4);
-		row_div_2.append(player_div_5);
-		row_div_2.append(spec_button_div);
-
-		$("#gameRoomList").append(row_div_1);
-		$("#gameRoomList").append(row_div_2);
-		$("#gameRoomList").append("<br><br>");
-	}
 }
 
 
@@ -1096,5 +1017,16 @@ function spectateGame(info)
 	$("#center>.tidecard2").append($tide2);	
 	setTides(info.fieldtide);
 
+	var loadPlayerInfo = function() {
 
+		return (function(name, picture) {
+			$("#userPlayer").find('.userName').text(name);
+			var $img=$("<img class=myprofile>");
+			$img.attr('src', picture);
+			$("#userPlayer").find('.myprofile').append($img);
+			
+		});
+	};
+
+	loadPlayerInfoFromFb(playerId, loadPlayerInfo());
 }
