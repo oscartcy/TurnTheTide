@@ -140,9 +140,9 @@ module.exports = {
 						room.cycle=room.cycle+1;
 						console.log(room.cycle);
 					}
-					if (endCycFlag && room.cycle!=room.playerNumber)
+					if (endCycFlag && room.cycle!=room.playerNumber+1)
 					{
-						console.log("fuck");
+
 						console.log(room.cycle);
 						console.log(room.playerNumber);
 						extraresult=setNextCycle(room);
@@ -167,7 +167,7 @@ module.exports = {
 							}	
 						}						
 					}
-					else if (endCycFlag && room.cycle==room.playerNumber )
+					else if (endCycFlag && room.cycle==room.playerNumber +1)
 					{
 						console.log("hey");
 						console.log(room.cycle);

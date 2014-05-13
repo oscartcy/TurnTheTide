@@ -42,6 +42,21 @@ else
 	setTides(info.currentTides);
 	setMyself(me);
 	setHandListener(info.id);
+	
+	var loadPlayerInfo = function() {
+
+		return (function(name, picture) {
+			$("#userPlayer").find('name').text("Name:{0}".format(name));
+			var $img=$("<img class=myprofile>");
+			$img.attr('src', picture);
+			$("#userPlayer").find('myprofile').append($img);
+			
+		});
+	};
+
+	loadPlayerInfoFromFb(playerId, loadPlayerInfo());
+	
+
 }
 
 function getMyself(players)
@@ -97,8 +112,9 @@ function setHandListener(id)
 								// }
 							});
 			$(this).remove();
-			var num=($(this).parent().children().length()-1)*65;
-			$(".myrow").animate({"width":num});
+			var num=($(this).parent().children().length-1)*65;
+			$(".myrow").css("width",num);
+			//$(".myrow").animate({"width":num});
 		});
 	});
 }
@@ -121,7 +137,10 @@ function setPlayerReady(playerId)
 		img.attr('src', "/images/card/w_back.jpg");	
 		$("#userPlayer>.weathercard").append(img);
 		var child=$(".hand>.row1").children();
+		var num=(child.length-1)*65;
+		$(".myrow").css("width",num);
 		$(child[0]).remove();
+		//$(".myrow").animate({"width":num});
 	}
 }
 function unsetHandListener()
@@ -157,7 +176,6 @@ function setTides(tideArray)
 
 function generatePlayer(name,pos,totalnumber,mark,life)
 {
-
 	if (pos==1)
 	{
 		var $player=$('<div class="otherPlayer playerLeft pos1"></div>');
@@ -338,7 +356,20 @@ function generatePlayer(name,pos,totalnumber,mark,life)
 		$("#GamePlaying").append($player);
 
 	}
+	
+	var loadPlayerInfo = function() {
+		var div = pos;
 
+		return (function(name, picture) {
+			$(".pos"+pos).find('name').text("Name:{0}".format(name));
+			var $img=$("<img class=profile>");
+			$img.attr('src', picture);
+			$(".pos"+pos).find('profile').append($img);
+			
+		});
+	};
+
+	loadPlayerInfoFromFb(name, loadPlayerInfo());
 }
 
 function setMyself(me)
@@ -1098,5 +1129,16 @@ function spectateGame(info)
 	$("#center>.tidecard2").append($tide2);	
 	setTides(info.fieldtide);
 
+	var loadPlayerInfo = function() {
 
+		return (function(name, picture) {
+			$("#userPlayer").find('name').text("Name:{0}".format(name));
+			var $img=$("<img class=myprofile>");
+			$img.attr('src', picture);
+			$("#userPlayer").find('myprofile').append($img);
+			
+		});
+	};
+
+	loadPlayerInfoFromFb(playerId, loadPlayerInfo());
 }

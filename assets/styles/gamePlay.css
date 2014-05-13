@@ -86,7 +86,7 @@
 .playerLeft>.mark
 {
 	position:absolute;
-	bottom:-1%;
+	bottom:-10%;
 	left:60%;
 	display:inline;
 }
