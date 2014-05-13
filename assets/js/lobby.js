@@ -441,10 +441,48 @@ function getRandomInt(min, max) {
 			var access_token = FB.getAuthResponse()['accessToken'];
 
 			if(request_ids) {
-				//hardcode to join the first one
-				var request_id = request_ids[0];
+				// //hardcode to join the first one
+				// var request_id = request_ids[0];
 
-				getGameRoomID(request_id, access_token, join);
+				// getGameRoomID(request_id, access_token, join);
+			}
+		}
+
+		function renderInviteList(request_ids) {
+			var article = $("#invitationList > article");
+
+			for(var i in request_ids) {
+				var request_id = request_ids[i];
+
+				var row = $('<div />', {
+					class: 'row'
+				}).appendTo(article);
+
+				var fbInfo = $('<div />', {
+					class: 'column_2'
+				}).appendTo(row);
+
+				var inviteDiv = $('<div />', {
+					class: 'column_2'
+				}).appendTo(row);
+
+				//not yet finish!!!
+
+				var loadPlayerInfo = function() {
+	    			var div = fbInfo;
+
+	    			return (function(name, picture) {
+	    				$('<img />', {
+	    					src: picture
+	    				}).appendTo(div);
+
+	    				$('<p />', {
+	    					text: name
+	    				}).appendTo(div);
+		    		});
+		    	};
+
+		    	getGameRoomID(request_id, access_token, loadPlayerInfo());
 			}
 		}
 
@@ -474,8 +512,8 @@ function getRandomInt(min, max) {
 					break;
 				}
 			}
-
-			return request_id_string.split(',');
+			if(request_id_string)
+				return request_id_string.split(',');
 		}
 
 		function getGameRoomID(request_id, access_token, callback){
@@ -483,13 +521,12 @@ function getRandomInt(min, max) {
 			var room_id;
 			console.log("trying to get game room id...");
 			$.get(url, function(result) {
-				room_id = result.data;
-				gameroom_id = room_id;
-				console.log("gameroom_id = " + gameroom_id);
+				room_id = result.data.room_id;
+				var fbid = result.data.fbid;
 
 				deleteRequest(request_id, playerId);
 
-				callback(gameroom_id);
+				callback(fbid,room_id);
 			});
 		}
 
@@ -512,7 +549,7 @@ function getRandomInt(min, max) {
 			options.message = message;
 		};
 		if (room_id) {
-			options.data = room_id;
+			options.data = {room_id: room_id, fbid: playerId} ;
 		};
 		FB.ui(options, function(response) {
 			if(callback) callback(response);
