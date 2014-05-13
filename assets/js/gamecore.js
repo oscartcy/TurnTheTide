@@ -97,6 +97,8 @@ function setHandListener(id)
 								// }
 							});
 			$(this).remove();
+			var num=($(this).parent().children().length()-1)*65;
+			$(".myrow").animate({"width":num});
 		});
 	});
 }
