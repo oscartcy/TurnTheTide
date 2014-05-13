@@ -664,7 +664,7 @@ function setRound(round,player)
 
 function showNewCycle(cycle)
 {
-	$(".hand>.myrow").css("width, 780");
+	$(".hand>.myrow").css("width", 780);
 	
 	for (var i=0;i<cycle.player.length;i++)
 	{
