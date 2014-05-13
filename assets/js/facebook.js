@@ -1,5 +1,6 @@
 var fbLogin = false;
 var fbUserInfo = {};
+// var access_token;
 
 (function($){
     var app_ID = '709747785734162';
@@ -73,6 +74,7 @@ var fbUserInfo = {};
 
     function onAuthResponseChange(response) {
         console.log('onAuthResponseChange', response);
+        // access_token = FB.getAuthResponse()['accessToken'];
     }
 
     function getMe(callback) {

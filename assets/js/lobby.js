@@ -308,6 +308,7 @@ function getRandomInt(min, max) {
 		function gameRoomStartHandler(e) {
 			$(e.target).off('click', gameRoomStartHandler);
 			$(e.target).prop('disabled', true);
+			$("#gameRoomInviteButton").off('click');
 
 			socket.post('/GameRoom/start/' + room.id, 
 				{},
@@ -326,6 +327,7 @@ function getRandomInt(min, max) {
 
         function gameRoomExitHandler(e) {
         	$(e.target).off('click', gameRoomExitHandler);
+        	$("#gameRoomInviteBtn").off('click');
 
         	socket.post('/GameRoom/leave/' + room.id,
         		{ playerId: playerId },
@@ -335,11 +337,15 @@ function getRandomInt(min, max) {
         			}
         		});
         }
+
+        //invite button
+        $("#gameRoomInviteBtn").on('click', function() {
+        	sendFbInvite(null, 'Join this room and play with me!', room.id,
+        		function(res){
+        			console.log('facebook send invite', res);
+        		});
+        });
     }
-	
-	function updateRankTable(){
-	
-	}
 
     function updateRoomInfo(room) {
     	var players = JSON.parse(room.players);
@@ -404,9 +410,6 @@ function getRandomInt(min, max) {
 				{
 					query: search_rm_txt.val()
 				},
-				
-				
-				
 				function(res) {
 					if(res.error){
 						console.log(res.error);
@@ -427,20 +430,25 @@ function getRandomInt(min, max) {
 	}
 
 	function checkIfInvited() {
-		//logic here
+		if(fbLogin)
+			check();
+		else
+			// FB.Event.subscribe('auth.statusChange', join);
+			$(document).on('fblogin', check);
 
-		//provide roomid if it is invited by others
-		var roomid = 1;
+		function check() {
+			var request_ids = getUrlParameter('request_ids');
+			var access_token = FB.getAuthResponse()['accessToken'];
 
-		if(roomid) {
-			if(fbLogin)
-				join();
-			else
-				// FB.Event.subscribe('auth.statusChange', join);
-				$(document).on('fblogin', join);
+			if(request_ids) {
+				//hardcode to join the first one
+				var request_id = request_ids[0];
+
+				getGameRoomID(request_id, access_token, join);
+			}
 		}
 
-		function join() {
+		function join(roomid) {
 			socket.post('/GameRoom/join/' + roomid,
 				{ playerId: playerId },
 				function(res) {
@@ -453,6 +461,62 @@ function getRandomInt(min, max) {
 					}
 				});
 		}
+
+		function getUrlParameter(sParam) {
+			var sPageURL = decodeURIComponent(window.location.search.substring(1));
+			var sURLVariables = sPageURL.split('&');
+			var request_id_string;
+
+			for (var i = 0; i < sURLVariables.length; i++) {
+				var sParameterName = sURLVariables[i].split('=');
+				if (sParameterName[0] == sParam) {
+					request_id_string = sParameterName[1];
+					break;
+				}
+			}
+
+			return request_id_string.split(',');
+		}
+
+		function getGameRoomID(request_id, access_token, callback){
+			var url = "https://graph.facebook.com/"+request_id+"?access_token="+access_token;
+			var room_id;
+			console.log("trying to get game room id...");
+			$.get(url, function(result) {
+				room_id = result.data;
+				gameroom_id = room_id;
+				console.log("gameroom_id = " + gameroom_id);
+
+				deleteRequest(request_id, playerId);
+
+				callback(gameroom_id);
+			});
+		}
+
+		function deleteRequest(requestId, user_id) {
+		    FB.api(requestId+"_"+user_id, 'delete', function(response) {
+		        console.log("deleted request = " + response);
+		    });
+		}
+	}
+
+	//facebook invite
+	function sendFbInvite(to, message, room_id, callback) {
+		var options = {
+			method: 'apprequests'
+		};
+		if (to) {
+			options.to = to;
+		};
+		if (message) {
+			options.message = message;
+		};
+		if (room_id) {
+			options.data = room_id;
+		};
+		FB.ui(options, function(response) {
+			if(callback) callback(response);
+		});
 	}
 
 })(jQuery);
