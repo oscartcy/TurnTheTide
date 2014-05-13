@@ -22,7 +22,8 @@ module.exports = {
 	alive:'integer',
 	numOfReady:'integer',
 	roundCards:'array',
-	playerPos:'array'
+	playerPos:'array',
+	gameRoomId:'integer'
     
   }
 

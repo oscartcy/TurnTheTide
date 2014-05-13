@@ -12,10 +12,18 @@ function setUpGame(info)
 	{
 		if (players[i]!=me)
 		{
-			generatePlayer(players[i],pos,info.playerNumber);
+			generatePlayer(players[i].Name,pos,info.playerNumber,0,players[i].Life);
 			pos++;
 		}
 	}
+if (info.playerNumber==3)
+{
+	$("#center").css("top","40%");
+}
+else
+{
+	$("#center").css("top","50%");
+}
 	$("#userPlayer").removeClass("hide");
 	$("#userPlayer>.cycle").text("Cycle: "+info.cycle);
 	$("#userPlayer>.round").text("Round: "+info.round);
@@ -55,12 +63,12 @@ function setHandListener(id)
 			var path=$(this).prop('src');
 			
 			//$("#userPlayer>.weathercard").text($(this).text());
-			$("#userPlayer>.weathercard").remove();
+			$("#userPlayer>.weathercard").empty();
 			var img = $('<img class="weathercard" >'); 
 			img.attr('src', path);
-			$("#userPlayer").append(img);
+			$("#userPlayer>.weathercard").append(img);
 			
-			path=$("#userPlayer>.weathercard").prop('src');
+			path=$("#userPlayer>.weathercard>.weathercard").prop('src');
 			numArray=path.match(/(card\/.)(.*)(\.)/);
 			num=parseInt(numArray[2]);
 		//	$("#userPlayer>.weathercard").text($(this).text());
@@ -105,6 +113,14 @@ function setPlayerReady(playerId)
 		img.attr('src', "/images/card/w_back.jpg");
 		$("#"+playerId+">.weathercard").append(img);
 	}
+	else if (spectate)
+	{
+		var img = $('<img class="weathercard face" >'); 
+		img.attr('src', "/images/card/w_back.jpg");	
+		$("#userPlayer>.weathercard").append(img);
+		var child=$(".hand>.row1").children();
+		$(child[0]).remove();
+	}
 }
 function unsetHandListener()
 {
@@ -137,19 +153,19 @@ function setTides(tideArray)
 	
 }
 
-function generatePlayer(player,pos,totalnumber)
+function generatePlayer(name,pos,totalnumber,mark,life)
 {
 
 	if (pos==1)
 	{
 		var $player=$('<div class="otherPlayer playerLeft pos1"></div>');
-		$player.attr('id',player.Name);
+		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
-		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
+		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 	//	var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
 		var $life=$('<div class="life">');
-		for (var i=0;i<player.Life;i++)
+		for (var i=0;i<life;i++)
 		{
 			var $lifeunit=$('<div class="lifeunit">')
 			
@@ -178,18 +194,23 @@ function generatePlayer(player,pos,totalnumber)
 		$player.append($tide);
 	
 		$player.append($weather);
+		
+		if (totalnumber==3)
+			$player.css("top","10%");
+		else
+			$player.css("top","30%");
 	
 		$("#GamePlaying").append($player);
 	}
 	if (pos==2)
 	{
 		var $player=$('<div class="otherPlayer playerLeft pos2"></div>');
-		$player.attr('id',player.Name);
+		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
-		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
+		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 		var $life=$('<div class="life">');
-		for (var i=0;i<player.Life;i++)
+		for (var i=0;i<life;i++)
 		{
 			// var $lifeguard = $('<img class="lifeguard" >'); 
 			// $lifeguard.attr('src', "/images/card/life.png");
@@ -205,7 +226,7 @@ function generatePlayer(player,pos,totalnumber)
 			
 			$lifeunit.append($lifedeath);			
 			$lifeunit.append($lifeguard);
-		$lifeunit.css("left",i*30+10);			
+			$lifeunit.css("left",i*30+10);			
 			$life.append($lifeunit);
 		}
 //		var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
@@ -220,17 +241,22 @@ function generatePlayer(player,pos,totalnumber)
 		$player.append($profile);
 		$player.append($tide);
 		$player.append($weather);
+		
+		if (totalnumber==3)
+			$player.css("top","10%");
+		else
+			$player.css("top","30%");
 		$("#GamePlaying").append($player);
 	}
 	if (pos==3)
 	{
 		var $player=$('<div class="otherPlayer playerLeft pos3"></div>');
-		$player.attr('id',player.Name);
+		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
-		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
+		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 		var $life=$('<div class="life">');
-		for (var i=0;i<player.Life;i++)
+		for (var i=0;i<life;i++)
 		{
 			// var $lifeguard = $('<img class="lifeguard" >'); 
 			// $lifeguard.attr('src', "/images/card/life.png");
@@ -266,16 +292,20 @@ function generatePlayer(player,pos,totalnumber)
 		{
 			$player.css("left","50px");
 		}
+		else
+		{
+			$player.css("left","260px");
+		}
 	}
 	if (pos==4)
 	{
 		var $player=$('<div class="otherPlayer playerLeft pos4"></div>');
-		$player.attr('id',player.Name);
+		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(player.Name));
-		var $mark=$('<p class="mark">Mark:{0}</p>'.format(player.Mark));
+		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 		var $life=$('<div class="life">');
-		for (var i=0;i<player.Life;i++)
+		for (var i=0;i<life;i++)
 		{
 			var $lifeunit=$('<div class="lifeunit">')
 			
@@ -318,9 +348,7 @@ function setMyself(me)
 //	$("#userPlayer>.life").text("Life: "+me.Life+"/"+me.RemainingLife);
 	for (var i=0;i<me.Life;i++)
 	{
-		// var $lifeguard = $('<img class="lifeguard" >'); 
-		// $lifeguard.attr('src', "/images/card/life.png");
-		// $("#userPlayer>.life").append($lifeguard);
+
 		
 		var $lifeunit=$('<div class="lifeunit">')
 		
@@ -367,7 +395,12 @@ function setMyself(me)
 function displayEndTurn(res,endCycleFlag)
 {
 	var flag=false;
+	
+	state=1;
+	roundRes=res;
+	cycleFlag=endCycleFlag;	
 	setPlayerCard(res.player,res.playerHand,res.remaininglife);
+	
 	window.setTimeout(function() {
 		setPlayerTide(res.player,res.tide,res.remaininglife,res.transfer1,res.transfer2);
 	},2000);
@@ -387,18 +420,19 @@ function displayEndTurn(res,endCycleFlag)
 	
 	if (!endCycleFlag)
 	{
-//		 setTides(res.fieldtide);
 		window.setTimeout(function() {
 				 setTides(res.fieldtide);
-		},7000);
+		},9000);
 	}
 		 
 	if (!endCycleFlag)
 	{
-			window.setTimeout(function() {
+		window.setTimeout(function() {
 			setRound(res.round,res.player);
-		},10000);
+		},12000);
 	}
+	if (!flag && !endCycleFlag && !spectate)
+		window.setTimeout(	function() {setHandListener(gameID)},13000);
 
 	return flag;
 }
@@ -496,24 +530,13 @@ function setPlayerCard(player,playerHand,rem)
 {
 	for (var i=0;i<player.length;i++)
 	{
-		if (rem[i]==-1)
-		{
-			//do nothing
-			//set animation first card,then death
-			// $("#"+player[i]+">.weathercard").text("Dead Already");
-			
-			// if ($("#"+player[i]).length==0)
-			// {
-				// $("#userPlayer>.weathercard").text("Dead Already");
-			// }
-		} 
-		else if(playerHand[i]!=-1)
+		if(playerHand[i]!=-1)
 		{
 			
 		//	$("#"+player[i]+">.weathercard").text(playerHand[i]);
 			//flipping animation
 		//	 $("#"+player[i]+">.weathercard").remove();
-			back=$("#"+player[i]+">.weathercard>.weathercard");
+			var back=$("#"+player[i]+">.weathercard>.weathercard");
 			var img = $('<img class="weathercard face" >'); 
 			img.attr('src', "/images/card/w{0}.jpg".format(playerHand[i]));
 			img.css("opacity",0.5);
@@ -524,17 +547,19 @@ function setPlayerCard(player,playerHand,rem)
 			else
 				rotate(back,img);
 			
-		//	$("#"+player[i]+">.weathercard").addClass('flipped');
-			
-			
-			//flip_card($("#"+player[i]+">.weathercard"),"2s");
-		
-			// if ($("#"+player[i]).length==0)
-			// {
-					// $("#userPlayer>.weathercard").text(playerHand[i]);
-			// }
+
 		}
 	}
+	
+	if (spectate)
+	{
+		var back=$("#userPlayer>.weathercard>.weathercard");
+		var img = $('<img class="weathercard face" >'); 
+		img.attr('src', "/images/card/w{0}.jpg".format(playerHand[0]));
+		img.css("opacity",0.5);
+		$("#userPlayer>.weathercard").append(img);
+		rotate(img,back);
+	}	
 }
 
 function setPlayerLife(player,remaininglife,life,die1,die2)
@@ -558,25 +583,36 @@ function setPlayerLife(player,remaininglife,life,die1,die2)
 				var child=lifeunit.children();
 				rotate($(child[0]),$(child[1]));
 			}
-			else
-			{
-				//setDeathanimation
-			}
-
 		
+			if (remaininglife[i]==-1)
+				window.setTimeout(Callback(),2000);
+				
 		}
-		// $("#"+player[i]+">.life").text("Life:{0}/{1}".format(remaininglife[i],life[i]));
-	
-	//	 if ($("#"+player[i]).length==0)
-	//	 {
-				// $("#userPlayer>.life").text("Life:{0}/{1}".format(remaininglife[i],life[i]));
-				// if (remaininglife[i]==-1)
-					// flag=true;
-	//	 }
 		
-		//death animation
-		//if (remaininglife[i]==-1)
-		//and if i==player himself set flag to true
+		function Callback() {
+
+			var cnt = i;
+
+			
+			return (function(){		
+					var $tide;
+					var $weathercard;
+					if ($("#"+player[cnt]).length!=0)
+					{
+						$tide=$("#"+player[cnt]+">.tidecard");
+						$weathercard=$("#"+player[cnt]+">.weathercard>.weathercard");
+					}
+					else
+					{							
+						$tide=$("#userPlayer>.tidecard");
+						$weathercard=$("#userPlayer>.weathercard>.weathercard");
+					}
+					$tide.addClass("grayscale");
+					$weathercard.addClass("grayscale");
+
+
+			}) ;
+		}	
 	}
 }
 
@@ -585,62 +621,167 @@ function setRound(round,player)
 	$("#userPlayer>.round").text("Round: "+round);
 	for (var i=0;i<player.length;i++)
 	{
-		if ($("#"+player[i]+">.weathercard").length!=0)
+		if ($("#"+player[i]+">.weathercard").length!=0 && !$("#"+player[i]+">.weathercard>.weathercard").hasClass('grayscale'))
 			$("#"+player[i]+">.weathercard").empty();
 		else
-			$("#userPlayer>.weathercard").remove();
+		if (!$("#userPlayer>.weathercard>.weathercard").hasClass('grayscale'))
+			$("#userPlayer>.weathercard>.weathercard").remove();
 	}
 }
 
-function showNewRound(cycle)
+function showNewCycle(cycle)
 {
-
+	for (var i=0;i<cycle.player.length;i++)
+	{
+		if ($("#"+cycle.player[i]).length!=0)
+			genPlayerNewCycle(cycle.player[i],cycle.mark[i],cycle.life[i]);
+		else
+			genMeNewCycle(cycle.hand[i],cycle.mark[i],cycle.life[i],cycle.cycle);
+	}
+	window.setTimeout(function() {
+				 setTides(cycle.fieldtide);
+	},2000);
+	// window.setTimeout(function() {
+				 // setHandListener(gameID);
+	// },4000);	
 }
 
+function genMeNewCycle(hand,mark,life,cycle)
+{
+	$("#userPlayer>.mark").text('Mark:{0}'.format(mark));
+	$("#userPlayer>.cycle").text("Cycle: "+cycle);
+	$("#userPlayer>.round").text("Round: 1");
+	//life
+	$("#userPlayer>.tidecard").remove();	
+	var $tide = $('<img class="tidecard" >'); 
+	$tide.attr('src', "/images/card/t_back.jpg");
+	$("#userPlayer").append($tide);
+	$("#userPlayer>.weathercard").empty();
+	var $life=$("#userPlayer>.life");
+	$life.empty();
+	for (var i=0;i<life;i++)
+	{
 
-function flip_card(id,speed){
-	//$('#'+id).attr("class","card flipped");
-	//id.attr("class","card flipped");
-	id.addClass("card");
-	id.addClass("flipped");
-	var child=id.children();
-	
-	//	child[0].className += " face front";
-	//$('#'+id+'.card.flipped img')[0].className += " face front";
-	
-	// $('#'+id+'.card.flipped img')[1].className += " face back";
 		
-	//$('#'+id+'.card').css("-webkit-transform-style","preserve-3d");
-	
-	id.css("-webkit-transform-style","preserve-3d");
-	$(child[0]).css("position","absolute");
-	$(child[0]).css("-webkit-backface-visibility","hidden");
-	$(child[0]).css("z-index","2");
-	
-	
-	$(child[1]).css("position","absolute");
-	$(child[1]).css("-webkit-backface-visibility","hidden");
-	$(child[1]).css("z-index","2");
-	
-	// $('#'+id+'.card .face').css("position","absolute");
-	// $('#'+id+'.card .face').css("-webkit-backface-visibility","hidden");
-	// $('#'+id+'.card .face').css("z-index","2");
-	
-	id.children('.back').css("-webkit-transform","rotatey(-180deg)");
-	//$('#'+id+'.card .back').css("-webkit-transform","rotatey(-180deg)");
-	
+		var $lifeunit=$('<div class="lifeunit">')
+		
+		var $lifedeath=$('<img class="lifeguard face">'); 
+		$lifedeath.attr('src', "/images/card/life_back.png");
+		$lifedeath.css("opacity",0.5);
+		
+		var $lifeguard = $('<img class="lifeguard face">'); 
+		$lifeguard.attr('src', "/images/card/life.png");
+		
+		$lifeunit.append($lifedeath);			
+		$lifeunit.append($lifeguard);
+		
+		$lifeunit.css("left",i*30+10);
+		
+		$("#userPlayer>.life").append($lifeunit);
+	}
+	//hand
+	$(".hand>.row1").empty();
+	hand.sort(function compareNumbers(a, b) {
+		return a - b;
+	});
+	for (var i=0;i<hand.length;i++)
+	{
+		if (!spectate)
+		{
+			
+			var img = $('<img class="weathercard" >'); 
+			img.attr('src', "/images/card/w{0}.jpg".format(hand[i]));
+			$(".hand>.row1").append(img);
+		}
+		else
+		{
+			var img = $('<img class="weathercard" >'); 
+			img.attr('src', "/images/card/w_back.jpg");
+			$(".hand>.row1").append(img);		
+		}
 
+	}
 	
-	setTimeout(function(){
-		//$('#'+id+'.card').css("-webkit-transition",speed);
-		$(child[0]).css("-webkit-transition",speed);
-		$(child[0]).css("-webkit-transition",speed);		
-		id.css("-webkit-transform","rotatey(-180deg)");
-		//$('#'+id+'.card.flipped').css("-webkit-transform","rotatey(-180deg)");
-	},0000);
 }
 
-//front should be in the back
+
+function genPlayerNewCycle(player,mark,life)
+{
+	$("#"+player+">.mark").text("Mark:{0}".format(mark));
+	var $life=$("#"+player+">.life");
+	$life.empty();
+	for (var i=0;i<life;i++)
+	{
+		var $lifeunit=$('<div class="lifeunit">')
+		
+		var $lifedeath=$('<img class="lifeguard face">'); 
+		$lifedeath.attr('src', "/images/card/life_back.png");
+		$lifedeath.css("opacity",0.5);
+		
+		var $lifeguard = $('<img class="lifeguard face">'); 
+		$lifeguard.attr('src', "/images/card/life.png");
+		
+		$lifeunit.append($lifedeath);			
+		$lifeunit.append($lifeguard);
+		$lifeunit.css("left",i*30+10);			
+		$life.append($lifeunit);
+	}
+	$("#"+player+">.tidecard").remove();	
+	var $tide = $('<img class="tidecard" >'); 
+	$tide.attr('src', "/images/card/t_back.jpg");
+	$("#"+player).append($tide);
+	$("#"+player+">.weathercard").empty();
+	
+
+}
+
+function endGameDisplay(players, scores, flag) {
+ 		var article = $("#endGameModal article").empty();
+
+			
+		if (flag)
+		{
+			$(".cs").addClass("hide");
+			$(".endGame").addClass("hide");
+		}
+		else
+		{
+			$(".cs").removeClass("hide");
+		//	$(".endGame").removeClass("hide");
+		}
+		if (flag && players[0]==playerId)
+		{
+			$(".cont").removeClass("hide");
+			$(".endGame").removeClass("hide");
+		}
+		else
+		{
+			$(".cont").addClass("hide");
+			$(".endGame").addClass("hide");
+		}
+ 		for(var i in players) {
+ 			var player = players[i];
+ 			var score = scores[i];
+ 
+ 			var row = $('<div />', {
+ 				class: 'row'
+ 			});
+ 
+ 			$('<div />', {
+ 				class: 'column_3',
+ 				html: '<img src="images/user.gif" /><p id="playerName" class="text center">'+player+'</p>'
+ 			}).appendTo(row);
+ 
+ 			$('<div />', {
+ 				class: 'column_3',
+ 				html: '<h1 class="color theme text center">'+score+'</h1>'
+ 			}).appendTo(row);
+ 
+ 			article.append(row);
+ 		}
+		
+		TukTuk.Modal.show('endGameModal');
+ }
 function rotate(back,front)
 {
 	var margin =back.width()/2;
@@ -650,9 +791,310 @@ function rotate(back,front)
 
 
 	back.stop().animate({width:'0px',height:''+height+'px',marginLeft:''+margin+'px',opacity:'0.5'},{duration:500});
+// back.stop().animate({width:'0px',height:''+height+'px',marginLeft:''+margin+'px',opacity:'0.5'}
+					// , {duration:500,
+					   // complete:function(){
+											// window.setTimeout(function() {
+											// back.stop().animate({width:''+width+'px',height:''+height+'px',marginLeft:'0px',opacity:'1'},{duration:500});
+											// },500);}});
 	window.setTimeout(function() {
 	back.stop().animate({width:''+width+'px',height:''+height+'px',marginLeft:'0px',opacity:'1'},{duration:500});
 	},500);
+
+
+}
+
+function destoryGame()
+{
+		spectate=false;
+		//When return button is clicked
+	$(".life").empty();
+	$("userPlayer>.weathercard").empty();
+	 $(".hand>.row1").empty();
+	 $(".pos1").remove();
+	 $(".pos2").remove();
+	 $(".pos3").remove();
+	 $(".pos4").remove();	
+	 	 $("#GamePlaying").addClass("hide");
+		refreshGameRoomList();
+	$("#main").removeClass("hide");
+	
+	function refreshGameRoomList() {
+		socket.get('/GameRoom',
+			"",
+			function (res) {
+				console.log("gameroom list", res);
+
+				$("#gameRoomList").empty();
+
+				$.each(res, function() {
+					addGameRoomToList(this);
+				});
+			});
+	}
+	function addGameRoomToList(room) {
+		var row_div_1 =$('<div/>',{
+			id: 'gameroom' + room.id,
+			class: 'row rm_row'
+		});
+		
+		var gameRoomName=$('<div/>',{
+			class: 'column_5'
+		});
+		gameRoomName.append("<h6 class=\"color theme text bold\">" + room.name + "</h6>");
+		
+		var join_button_div=$('<div/>',{
+			class:'column_2',
+		});
+		var join_button = $('<button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>');
+		join_button.on('click', function() {
+			socket.post('/GameRoom/join/' + room.id,
+				{ playerId: playerId },
+				function(res) {
+					if(res.error) {
+						console.log(res.error);
+					} else {
+						console.log("Join Game Room response: ", res);
+
+						TukTuk.Modal.show('gameRoom');
+						joinGameRoom(res);
+					}
+				});
+		});
+		join_button_div.append(join_button);
+		row_div_1.append(gameRoomName);
+		row_div_1.append(join_button_div);
+		
+		var row_div_2 =$('<div/>',{
+			class: 'row rm_row'
+		});
+		var player_div_1=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_1.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_2=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_2.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_3=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_3.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_4=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_4.append("<img src=\"/images/profile.jpg\">");
+		
+		var player_div_5=$('<div/>',{
+			class:'column_1',
+		});
+		player_div_5.append("<img src=\"/images/profile.jpg\">");
+		
+		
+		
+		var spec_button_div=$('<div/>',{
+			class:'column_2',
+		});
+		var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
+		spec_button.on('click', function() {
+			
+			socket.post('/GameRoom/spectate/' + room.id,
+				{ },
+				function(res) {
+					if(res.error) {
+						console.log(res.error);
+					} else {
+					//	console.log(res);
+						console.log(res.room);
+						socket.post('/Game/spectate/' + res.room, 
+							{},
+							function(res) {
+								if(res.error)
+									console.log(res.error);
+								console.log(res.info);
+								spectateGame(res.info);
+							});													
+					}
+				});
+		});
+		spec_button_div.append(spec_button);
+
+		row_div_2.append(player_div_1);
+		row_div_2.append(player_div_2);
+		row_div_2.append(player_div_3);
+		row_div_2.append(player_div_4);
+		row_div_2.append(player_div_5);
+		row_div_2.append(spec_button_div);
+
+		$("#gameRoomList").append(row_div_1);
+		$("#gameRoomList").append(row_div_2);
+		$("#gameRoomList").append("<br><br>");
+	}
+}
+
+
+function spectateGame(info)
+{
+	spectate=true;
+	//gameID=info.id;
+	var pos=1;
+	$("#main").addClass("hide");
+	TukTuk.Modal.hide();
+	$("#GamePlaying").removeClass("hide");
+	$("#center").removeClass("hide");
+	for (var i=1;i<info.player.length;i++)
+	{
+		generatePlayer(info.player[i],pos,info.player.length,info.mark[i],info.life[i]);
+		pos++;
+	}
+	//need to set back tide and life
+	
+	for (var i=1;i<info.player.length;i++)
+	{
+		var $tide = $('<img class="tidecard" >'); 
+		if (info.tide[i]!=0 && info.remLife[i]!=-1)
+		{
+			$tide.attr('src', "/images/card/t{0}.jpg".format(info.tide[i]));
+			$("#"+info.player[i]+">.tidecard").remove();
+			$("#"+info.player[i]).append($tide);
+		}
+		
+		var death=info.life[i]-info.remLife[i];
+		if (death>info.life[i])
+			death=info.life[i];
+		for (var j=0;j<death;j++)
+		{	
+			var child=$("#"+info.player[i]+">.life").children();
+			$(child[j]).empty();
+			
+			var $lifedeath=$('<img class="lifeguard face">'); 
+			$lifedeath.attr('src', "/images/card/life.png");
+			$lifedeath.css("opacity",0.5);
+			
+			var $lifeguard = $('<img class="lifeguard face">'); 
+			$lifeguard.attr('src', "/images/card/life_back.png");
+			
+			$(child[j]).append($lifedeath);			
+			$(child[j]).append($lifeguard);				
+		}
+	}
+	if (info.playerNumber==3)
+	{
+		$("#center").css("top","40%");
+	}
+	else
+	{
+		$("#center").css("top","50%");
+	}
+	var death=info.life[0]-info.remLife[0];
+	if (death>info.life[0])
+			death=info.life[0];
+	for (var i=0;i<info.life.length;i++)
+	{	
+		if (i<death)
+		{
+			var $lifeunit=$('<div class="lifeunit">');
+			var $lifedeath=$('<img class="lifeguard face">'); 
+			$lifedeath.attr('src', "/images/card/life.png");
+			$lifedeath.css("opacity",0.5);
+			
+			var $lifeguard = $('<img class="lifeguard face">'); 
+			$lifeguard.attr('src', "/images/card/life_back.png");
+			
+			$lifeunit.append($lifedeath);			
+			$lifeunit.append($lifeguard);			
+		}
+		else
+		{
+			var $lifeunit=$('<div class="lifeunit">');
+			
+			var $lifedeath=$('<img class="lifeguard face">'); 
+			$lifedeath.attr('src', "/images/card/life_back.png");
+			$lifedeath.css("opacity",0.5);
+			
+			var $lifeguard = $('<img class="lifeguard face">'); 
+			$lifeguard.attr('src', "/images/card/life.png");
+			
+			$lifeunit.append($lifedeath);			
+			$lifeunit.append($lifeguard);
+		}
+		$lifeunit.css("left",i*30+10);
+		
+		$("#userPlayer>.life").append($lifeunit);
+	}
+	
+	// set player ready status	
+	for (var i=1;i<info.player.length;i++)
+	{
+		if (info.ready[i])
+		{
+			var img = $('<img class="weathercard face" >'); 
+			img.attr('src', "/images/card/w_back.jpg");
+			$("#"+info.player[i]+">.weathercard").append(img);
+		}		
+	}
+	var img = $('<img class="weathercard face" >'); 
+	img.attr('src', "/images/card/w_back.jpg");	
+	if (info.ready[0])
+		$("#userPlayer>.weathercard").append(img);
+		
+
+	for (var i=0;i<info.keeperHand;i++)
+	{
+		var img = $('<img class="weathercard" >'); 
+		img.attr('src', "/images/card/w_back.jpg");
+		$(".hand>.row1").append(img);		
+	}
+	$("#userPlayer").removeClass("hide");
+	$("#userPlayer>.cycle").text("Cycle: "+info.cycle);
+	$("#userPlayer>.round").text("Round: "+info.round);
+	$("#userPlayer>.mark").text("Mark: "+info.mark[0]);
+	$("#userPlayer>.userName").text("Name: "+info.player[0]);
+	
+	var $tide = $('<img class="tidecard" >'); 
+	if (info.tide[0]!=0 &&info.remLife[0]!=-1)
+	{
+		$tide.attr('src', "/images/card/t{0}.jpg".format(info.tide[0]));
+		$("#userPlayer").append($tide);
+	}
+	else
+	{
+		$tide.attr('src', "/images/card/t_back.jpg");
+		$("#userPlayer").append($tide);		
+	}
+	
+	//set death
+	for (var i=1;i<info.player.length;i++)
+	{
+		if (info.remLife[i]<=-1)
+		{
+			var img = $('<img class="weathercard face" >'); 
+			img.attr('src', "/images/card/w_back.jpg");
+			$("#"+info.player[i]+">.weathercard").append(img);		
+			$("#"+info.player[i]+">.weathercard>.weathercard").addClass('grayscale');
+			$("#"+info.player[i]+">.tidecard").addClass('grayscale');
+		}		
+	}	
+	if (info.remLife[0]<=-1)
+	{
+		var img = $('<img class="weathercard face" >'); 
+		img.attr('src', "/images/card/w_back.jpg");
+		$("#userPlayer>.weathercard").append(img);
+		$("#userPlayer>.weathercard>.weathercard").addClass('grayscale');
+		$("#userPlayer>.tidecard").addClass('grayscale');			
+	}
+	
+	var $tide1 = $('<img class="tidecard" >'); 
+	$tide1.attr('src', "/images/card/t_back.jpg");
+	$("#center>.tidecard1").append($tide1);
+	
+	var $tide2 = $('<img class="tidecard" >'); 
+	$tide2.attr('src', "/images/card/t_back.jpg");
+	$("#center>.tidecard2").append($tide2);	
+	setTides(info.fieldtide);
 
 
 }

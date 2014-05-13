@@ -391,6 +391,19 @@
 		
 
     },
+	spectate: function(req,res){
+		console.log("asking");
+		
+		var id=req.param('id');
+		GameRoom.findOne(id).done(findRoomCallback);
+		function findRoomCallback(err, room)
+		{
+			//res.rmID=room.gameid;
+			GameRoom.subscribe(req.socket, room);
+			console.log(room.gameid);
+			return res.json({ room: room.gameid });
+		}
+	},
     /**
      * Overrides for the settings in `config/controllers.js`
      * (specific to GameRoomController)
