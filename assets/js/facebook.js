@@ -188,7 +188,7 @@ function renderFriendList() {
 			
 		var div = $("<div />", {
 			class: 'column_2',
-			id:friend.id
+			id: "friendList_" + friend.id
 		}).appendTo(rank_table);
 		
 		
@@ -237,18 +237,18 @@ function renderFriendList() {
 					var user = res.user;
 					
 					if(user.status == "offline")
-						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
+						$('#friendList_'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
 					if(user.status == "online")
-						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_green");
+						$('#friendList_'+ fd.id+' h6' +' span').attr("class","icon circle color_green");
 					if(user.status == "inGame")
-						$('#'+ fd.id+' h6' +' span').attr("class","icon circle color_orange");
+						$('#friendList_'+ fd.id+' h6' +' span').attr("class","icon circle color_orange");
 					
 					console.log("name: "+ fd.first_name + ", id:" + fd.id + ', status: ', user.status);
 					
 					//update score from models
-					console.log("The score is: " + $('#'+ fd.id+' #score').html());
-					$('#'+ fd.id+' #score').html(user.score);
-					console.log("The score is: " + $('#'+ fd.id+' #score').html());
+					console.log("The score is: " + $('#friendList_'+ fd.id+' #score').html());
+					$('#friendList_'+ fd.id+' #score').html(user.score);
+					console.log("The score is: " + $('#friendList_'+ fd.id+' #score').html());
 				}
 			});
 		}
