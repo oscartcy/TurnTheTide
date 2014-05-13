@@ -40,6 +40,7 @@ var fbUserInfo = {};
             login(loginCallback);
         } else {
             // fbLogin = true;
+
             //login success
             getMe(function(){
                 serverLogin();
