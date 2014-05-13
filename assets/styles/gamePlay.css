@@ -86,8 +86,8 @@
 .playerLeft>.mark
 {
 	position:absolute;
-	bottom:-10%;
-	left:40%;
+	bottom:-1%;
+	left:60%;
 	display:inline;
 }
 
@@ -265,4 +265,10 @@ img.grayscale {
 .face
 {
 	position:absolute;
+}
+
+.gameRoomPlayer,#endGameModal img {
+	width: 50px;
+	margin: auto;
+	display: block;
 }

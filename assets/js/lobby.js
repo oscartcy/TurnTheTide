@@ -2,6 +2,9 @@
 var playerId = getRandomInt(1, 100000);
 var currentRoomID;
 var	gameID;
+var spectate=false;
+var cyc;
+
 $('#playerName').text(playerId);
 
 function getRandomInt(min, max) {
@@ -18,7 +21,37 @@ function getRandomInt(min, max) {
 		initSocketListen();
 		initCreateRoomButton();
 		initMatchButton();
-
+		
+		initContCycleButton();
+		function initContCycleButton()
+		{
+			$(".cont").on('click',function(){
+					socket.post('/Game/continueGame/' + gameID,
+						{ 
+							continueFlag:true,
+							rmID:gameID,
+							gmRM:currentRoomID
+						});
+			});
+			$(".endGame").on('click',function(){
+					socket.post('/Game/continueGame/' + gameID,
+						{ 
+							continueFlag:false,
+							rmID:gameID,
+							gmRM:currentRoomID
+						});
+			});
+			$(".cs").on('click',function(){
+						TukTuk.Modal.hide();
+					destoryGame();	
+					// socket.post('/Game/continueGame/' + gameID,
+						// { 
+							// continueFlag:false,
+							// rmID:gameID,
+							// gmRM:currentRoomID
+						// });
+			});
+		}
 		function initSocketListen(){
 			socket.on('message', function(res) {
 				if(res.model == 'gameroom') {
@@ -75,14 +108,31 @@ function getRandomInt(min, max) {
 				if (res.status=='endCycle')
 				{
 					//window.setTimeout(	showNewCycle(res.cycle),9000);
-					showNewCycle(res.cycle);
-					
-					//if room master
+				//	showNewCycle(res.cycle);
+					cyc=res.cycle;
+					endGameDisplay(res.cycle.player, res.cycle.mark,true);
+				}
+				
+				if (res.status=='continue')
+				{
+					TukTuk.Modal.hide();
+					showNewCycle(cyc);
+					if (!spectate)
+					setHandListener(gameID);
+				}
+				
+				if (res.status=='endEarly')
+				{
+				TukTuk.Modal.hide();
+					destoryGame();
 				}
 				
 				if (res.status=='endGame')
 				{
-					window.setTimeout(	function(){showEndGame(res.gameResult)},9000);
+					console.log(res.gameResult);
+					endGameDisplay(res.gameResult.player,res.gameResult.mark,false);	
+				//	destoryGame();
+				//	window.setTimeout(	function(){showEndGame(res.gameResult)},9000);
 				}
 			});
 		};
@@ -148,7 +198,8 @@ function getRandomInt(min, max) {
                 socket.post('/GameRoom/create',
                     {
                         size: size,
-                        name: name
+                        name: name,
+						
                     },
                     function(res) {
                         console.log("create room response: ", res);
@@ -262,18 +313,25 @@ function getRandomInt(min, max) {
 		});
 		var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
 		spec_button.on('click', function() {
-			/*
-			socket.post('/GameRoom/join/' + room.id,
-				{ playerId: playerId },
+			
+			socket.post('/GameRoom/spectate/' + room.id,
+				{ },
 				function(res) {
 					if(res.error) {
 						console.log(res.error);
 					} else {
-						console.log("Join Game Room response: ", res);
-
-						joinGameRoom(res);
+					//	console.log(res);
+						console.log(res.room);
+						socket.post('/Game/spectate/' + res.room, 
+							{},
+							function(res) {
+								if(res.error)
+									console.log(res.error);
+								console.log(res.info);
+								spectateGame(res.info);
+							});													
 					}
-				});*/
+				});
 		});
 		spec_button_div.append(spec_button);
 

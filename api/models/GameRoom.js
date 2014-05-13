@@ -11,7 +11,8 @@ module.exports = {
     attributes: {
                     players: 'string',
                     size: 'integer',
-                    name: 'string'
+                    name: 'string',
+					gameid: 'integer'
                 }
 
 
