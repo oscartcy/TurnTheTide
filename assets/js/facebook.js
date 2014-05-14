@@ -181,45 +181,6 @@ function renderFriendList() {
 	for(var i in friends) {
 		var friend = friends[i];
 		
-		//to make the rank table scollable horizontally
-		var rank_tb_width = $("#rank_table").width();
-		if(rank_tb_width >= 700){
-			rank_tb_width += 138;
-			$("#rank_table").width(rank_tb_width);
-			console.log("width: "+ $("#rank_table").width());
-		}
-			
-		var div = $("<div />", {
-			class: 'column_2',
-			id: "friendList_" + friend.id
-		}).appendTo(rank_table);
-		
-		
-		var status_circle = $('<span/>',{
-			class: 'icon circle color_gray'
-		});
-		
-		var name = $('<h6 />', {
-			text: friend.first_name,
-			class: 'text center bold color theme'
-		});
-		
-		name.append("&nbsp;");
-		status_circle.appendTo(name);
-		name.appendTo(div);
-		
-		
-		$('<img />', {
-			src: friend.picture.data.url
-		}).appendTo(div);
-		
-
-		$('<h6 />', {
-			id: "score",
-			text: 100,
-			class: 'text center'
-		}).appendTo(div);
-		
 		socket.post('/User/show',
 			{
 				fbid: friend.id
@@ -238,6 +199,45 @@ function renderFriendList() {
 					console.log("error: "+res.error);
 				else {
 					var user = res.user;
+
+                    //to make the rank table scollable horizontally
+                    var rank_tb_width = $("#rank_table").width();
+                    if(rank_tb_width >= 700){
+                        rank_tb_width += 138;
+                        $("#rank_table").width(rank_tb_width);
+                        console.log("width: "+ $("#rank_table").width());
+                    }
+
+                    var div = $("<div />", {
+                        class: 'column_2',
+                        id: "friendList_" + fd.id
+                    }).appendTo(rank_table);
+
+
+                    var status_circle = $('<span/>',{
+                        class: 'icon circle color_gray'
+                    });
+
+                    var name = $('<h6 />', {
+                        text: fd.first_name,
+                        class: 'text center bold color theme'
+                    });
+
+                    name.append("&nbsp;");
+                    status_circle.appendTo(name);
+                    name.appendTo(div);
+
+
+                    $('<img />', {
+                        src: fd.picture.data.url
+                    }).appendTo(div);
+
+
+                    $('<h6 />', {
+                        id: "score",
+                        text: 0,
+                        class: 'text center'
+                    }).appendTo(div);
 					
 					if(user.status == "offline")
 						$('#friendList_'+ fd.id+' h6' +' span').attr("class","icon circle color_gray");
