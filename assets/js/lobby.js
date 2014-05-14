@@ -445,45 +445,76 @@ function getRandomInt(min, max) {
 				// var request_id = request_ids[0];
 
 				// getGameRoomID(request_id, access_token, join);
+				console.log('request_ids', request_ids);
+
+				renderInviteList(request_ids, access_token);
 			}
 		}
 
-		function renderInviteList(request_ids) {
+		function renderInviteList(request_ids, access_token) {
 			var article = $("#invitationList > article");
 
 			for(var i in request_ids) {
-				var request_id = request_ids[i];
+				var loadRequestInfo = function() {
+	    			var request_id = request_ids[i];
 
-				var row = $('<div />', {
-					class: 'row'
-				}).appendTo(article);
+	    			return (function(fbid, roomid) {
+	    				if(fbid && roomid) {
+	    					var row = $('<div />', {
+	    						class: 'row'
+	    					}).appendTo(article);    					
 
-				var fbInfo = $('<div />', {
-					class: 'column_2'
-				}).appendTo(row);
+	    					var playerDiv = $('<div />', {
+	    						class: 'column_3'
+	    					}).appendTo(row);
 
-				var inviteDiv = $('<div />', {
-					class: 'column_2'
-				}).appendTo(row);
+	    					var inviteDiv = $('<div />', {
+	    						class: 'column_3',
+	    						style: 'text-align: center'
+	    					}).appendTo(row);
 
-				//not yet finish!!!
+		    				//invite button
+		    				var btn = $("<button />", {
+		    					class: 'button success',
+		    					text: 'Join My Room'
+		    				});
 
-				var loadPlayerInfo = function() {
-	    			var div = fbInfo;
+		    				btn.on('click', function() {
+		    					socket.post('/GameRoom/join/' + roomid,
+		    						{ playerId: playerId },
+		    						function(res) {
+		    							if(res.error) {
+		    								console.log(res.error);
+		    							} else {
+		    								console.log("Join Game Room response: ", res);
 
-	    			return (function(name, picture) {
-	    				$('<img />', {
-	    					src: picture
-	    				}).appendTo(div);
+		    								joinGameRoom(res);
+		    							}
+		    						});
+		    				});
 
-	    				$('<p />', {
-	    					text: name
-	    				}).appendTo(div);
-		    		});
-		    	};
+		    				btn.appendTo(inviteDiv);
 
-		    	getGameRoomID(request_id, access_token, loadPlayerInfo());
+		    				//invite player info
+		    				loadPlayerInfoFromFb(fbid, 
+			    				function(name, picture) {
+				    				$('<img />', {
+				    					src: picture
+				    				}).appendTo(playerDiv);
+
+				    				$('<p />', {
+				    					text: name,
+				    					class: 'text center'
+				    				}).appendTo(playerDiv);
+					    		}
+				    		);
+		    			}
+			    	});
+		    	};		    	
+		    	getGameRoomID(request_ids[i], access_token, loadRequestInfo());
 			}
+			
+			TukTuk.Modal.show('invitationList');
 		}
 
 		function join(roomid) {
@@ -518,22 +549,32 @@ function getRandomInt(min, max) {
 
 		function getGameRoomID(request_id, access_token, callback){
 			var url = "https://graph.facebook.com/"+request_id+"?access_token="+access_token;
-			var room_id;
+
 			console.log("trying to get game room id...");
-			$.get(url, function(result) {
-				room_id = result.data.room_id;
-				var fbid = result.data.fbid;
 
-				deleteRequest(request_id, playerId);
+			$.get(url)
+				.done(function(result) {
+					console.log("from fb request id", result);
+					var data = JSON.parse(result.data);
 
-				callback(fbid,room_id);
-			});
+					var room_id = data.room_id;
+					var fbid = data.fbid;
+
+					deleteRequest(request_id, playerId);
+
+					callback(fbid, room_id);
+				})
+				.fail(function() {
+					console.log('get game room id from request id fail');
+					callback(null, null);
+				});
 		}
 
 		function deleteRequest(requestId, user_id) {
 		    FB.api(requestId+"_"+user_id, 'delete', function(response) {
 		        console.log("deleted request = " + response);
 		    });
+		    console.log('delete request', requestId);
 		}
 	}
 
@@ -559,29 +600,30 @@ function getRandomInt(min, max) {
 })(jQuery);
 
 function loadPlayerInfoFromFb(fbid, callback) {
-	// if(fbLogin)
-	// 	load();
-	// else
-	// 	FB.Event.subscribe('auth.statusChange', load);
+	if(fbLogin)
+		load();
+	else
+		$(document).on('fblogin', load);
 
-	// function load(){
-	// 	FB.api('/'+fbid, {fields: 'picture.width(100).height(100)'}, function(response){
-	// 		if( !response.error ) {
-	// 			return callback(response.picture.data.url);
-	// 		} else {
-	// 			console.error('fb api error: ', response);
-	// 		}
-	// 	});
-	// }
-	$.get("http://graph.facebook.com/{0}".format(fbid))
-		.done(function(res) {
-			var name = "";
+	function load(){
+		FB.api('/'+fbid, {fields: 'first_name, picture.width(100).height(100)'}, function(response){
+			if( !response.error ) {
+				return callback(response.first_name, response.picture.data.url);
+			} else {
+				console.error('fb api error: ', response);
+			}
+		});
+	}
 
-			if(res.first_name)
-				name = res.first_name;
+	// $.get("http://graph.facebook.com/{0}".format(fbid))
+	// 	.done(function(res) {
+	// 		var name = "";
 
-			var picture = "http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid);
-			callback(name, picture);
-		})
+	// 		if(res.first_name)
+	// 			name = res.first_name;
+
+	// 		var picture = "http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid);
+	// 		callback(name, picture);
+	// 	})
 	// callback("http://graph.facebook.com/{0}/picture?height=100&type=normal&width=100".format(fbid));
 }

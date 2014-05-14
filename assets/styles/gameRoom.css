@@ -59,6 +59,13 @@
 	margin: auto;
 	display: block;
 }
+
+#invitationList > article img {
+	width: 100px;
+	margin: auto;
+	display: block;
+}
+
 /*
 #gameRoomButtonGroup {
 	position: absolute;
