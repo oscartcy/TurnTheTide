@@ -56,7 +56,7 @@ else
 
 	loadPlayerInfoFromFb(playerId, loadPlayerInfo());
 	
-
+	$("#GamePlaying p").addClass('color white text normal');
 }
 
 function getMyself(players)
@@ -70,6 +70,18 @@ function getMyself(players)
 
 function setHandListener(id)
 {
+	// $(".myrow").toggle('active');
+
+	// window.setTimeout(function(){
+	// 	$('.myrow').toggle('active');
+	// }, 1000);
+
+	$(".myrow").toggle('ani');
+
+	window.setTimeout(function(){
+		$('.myrow').toggle('ani');
+	}, 1000);
+
 	$(".hand").find(".weathercard").each(function()
 	{
 		$(this).dblclick(function(e)
@@ -170,8 +182,13 @@ function setTides(tideArray)
 	img2.appendTo("#center>.tidecard2");
 	rotate(img1,back1);
 	rotate(img2,back2);
-	//img.appendTo("#center");	
-	
+	//img.appendTo("#center");
+
+	back1.addClass('face');
+	back2.addClass('face');
+
+	back1.attr('style', '');
+	back2.attr('style', '');
 }
 
 function generatePlayer(name,pos,totalnumber,mark,life)
@@ -181,7 +198,7 @@ function generatePlayer(name,pos,totalnumber,mark,life)
 		var $player=$('<div class="otherPlayer playerLeft pos1"></div>');
 		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $name=$('<h5 class="name color theme text bold">Name:{0}</h5>'.format(name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 	//	var $life=$('<p class="life">Life:{0}/{1}</p>'.format(player.RemainingLife,player.Life));
 		var $life=$('<div class="life">');
@@ -227,7 +244,7 @@ function generatePlayer(name,pos,totalnumber,mark,life)
 		var $player=$('<div class="otherPlayer playerLeft pos2"></div>');
 		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $name=$('<h5 class="name color theme text bold">Name:{0}</h5>'.format(name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 		var $life=$('<div class="life">');
 		for (var i=0;i<life;i++)
@@ -273,7 +290,7 @@ function generatePlayer(name,pos,totalnumber,mark,life)
 		var $player=$('<div class="otherPlayer playerLeft pos3"></div>');
 		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $name=$('<h5 class="name color theme text bold">Name:{0}</h5>'.format(name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 		var $life=$('<div class="life">');
 		for (var i=0;i<life;i++)
@@ -322,7 +339,7 @@ function generatePlayer(name,pos,totalnumber,mark,life)
 		var $player=$('<div class="otherPlayer playerLeft pos4"></div>');
 		$player.attr('id',name);
 		var $profile=$('<div class="profile"></div>');
-		var $name=$('<p class="name">Name:{0}</p>'.format(name));
+		var $name=$('<h5 class="name color theme text bold">Name:{0}</h5>'.format(name));
 		var $mark=$('<p class="mark">Mark:{0}</p>'.format(mark));
 		var $life=$('<div class="life">');
 		for (var i=0;i<life;i++)

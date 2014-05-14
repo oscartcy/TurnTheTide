@@ -2,7 +2,8 @@ var fbLogin = false;
 var fbUserInfo = {};
 
 (function($){
-    var app_ID = '709747785734162';
+    //var app_ID = '709747785734162';
+    var app_ID = '713959235313017';
 
     FB.init({
         appId: app_ID,
