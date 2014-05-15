@@ -383,34 +383,34 @@ function searchRm(){
 	});
 }
 
-function checkIfInvited() {
-	//logic here
+// function checkIfInvited() {
+// 	//logic here
 
-	//provide roomid if it is invited by others
-	var roomid = 1;
+// 	//provide roomid if it is invited by others
+// 	var roomid = 1;
 
-	if(roomid) {
-		if(fbLogin)
-			join();
-		else
-			// FB.Event.subscribe('auth.statusChange', join);
-			$(document).on('fblogin', join);
-	}
+// 	if(roomid) {
+// 		if(fbLogin)
+// 			join();
+// 		else
+// 			// FB.Event.subscribe('auth.statusChange', join);
+// 			$(document).on('fblogin', join);
+// 	}
 
-	function join() {
-		socket.post('/GameRoom/join/' + roomid,
-			{ playerId: playerId },
-			function(res) {
-				if(res.error) {
-					console.log(res.error);
-				} else {
-					console.log("Join Game Room response: ", res);
+// 	function join() {
+// 		socket.post('/GameRoom/join/' + roomid,
+// 			{ playerId: playerId },
+// 			function(res) {
+// 				if(res.error) {
+// 					console.log(res.error);
+// 				} else {
+// 					console.log("Join Game Room response: ", res);
 					
-					joinGameRoom(res);
-				}
-			});
-	}
-}
+// 					joinGameRoom(res);
+// 				}
+// 			});
+// 	}
+// }
 
 function refreshGameRoomList() {
 	socket.get('/GameRoom',

@@ -56,8 +56,6 @@
 				<label>Size:<small>required</small></label>
 				<span class="select">
 					<select id="gameRoomSize">
-						<option value="1">1</option>
-						<option value="2">2</option>
 						<option value="3">3</option>
 						<option value="4">4</option>
 						<option value="5">5</option>
@@ -154,10 +152,20 @@
  
  <div id="endGameModal" data-tuktuk="modal" class="column_5">
      <header>
-         <h4 class="text thin">End Game</h4>
+         <h4 id="endGameHead" class="text thin">End Turn</h4>
      </header>
      <article>
- 		
+ 		<table>
+ 			<thead>
+ 				<tr>
+ 					<th>Player</th>
+ 					<th>Score</th>
+ 				</tr>
+ 			</thead>
+ 			<tbody>
+ 			</tbody>
+ 		</table>
+ 		<h4 class="text" id="endGameExtra">Waiting for Room Owner Response</h4>
      </article>
      <footer>
         <button data-modal="close" class="button secondary cs"><span class="icon remove"></span>Close</button>

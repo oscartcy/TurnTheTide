@@ -50,9 +50,35 @@ module.exports = {
 						playerPos:playername,
 						gameRoomId:roomid
 					}).done(function(err, game) {  
+for (var i=0;i<playername.length;i++)
+    User.findOne(playername[i]).done(function(err, user) {
+        if(err)
+          console.log('disconnect find user error: ', err);
+
+        user.status = 'inGame';
+		
+        user.save(function(err) {
+          if(err)
+            console.log(err);
+		
+			//emit logout message to your friends
+			var sockets = GameRoom.subscribers();
+			for(var i in sockets) {
+		//		console.log(user.fbid+" has logged out");
+				var temp_socket = sockets[i];
+				temp_socket.emit('user_logout', {});
+			}
+		});
+      });
+
+
+
+
+
+
 						var sockets = GameRoom.subscribers(room.id);
 						console.log(game);
-						console.log(game.id);
+						console.log(game.id);					
 						GameRoom.findOne(roomid).done(findRoomCallback);
 						
 						function findRoomCallback(err, room) {
@@ -304,8 +330,26 @@ module.exports = {
 							if(err) {
 								console.log(err);
 					}});	
-				
+for (var i=0;i<room.playerPos.length;i++)				
+    User.findOne(room.playerPos[i]).done(function(err, user) {
+        if(err)
+          console.log('disconnect find user error: ', err);
 
+        user.status = 'online';
+		
+        user.save(function(err) {
+          if(err)
+            console.log(err);
+		
+			//emit logout message to your friends
+			var sockets = GameRoom.subscribers();
+			for(var i in sockets) {
+			//	console.log(user.fbid+" has logged out");
+				var temp_socket = sockets[i];
+				temp_socket.emit('user_logout', {});
+			}
+		});
+      });
 				
 				function destroyRoom(err,gameroom)
 				{

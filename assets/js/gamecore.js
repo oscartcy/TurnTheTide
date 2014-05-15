@@ -672,10 +672,15 @@ function setRound(round,player)
 	for (var i=0;i<player.length;i++)
 	{
 		if ($("#"+player[i]+">.weathercard").length!=0 && !$("#"+player[i]+">.weathercard>.weathercard").hasClass('grayscale'))
-			$("#"+player[i]+">.weathercard").empty();
+		{
+			$("#"+player[i]+">.weathercard").children().fadeOut(500, function() {
+	    		$$("#"+player[i]+">.weathercard").empty();
+			});
+		}	
+		//$("#"+player[i]+">.weathercard").empty();
 		else
 		if (!$("#userPlayer>.weathercard>.weathercard").hasClass('grayscale'))
-			$("#userPlayer>.weathercard>.weathercard").remove();
+			$("#userPlayer>.weathercard>.weathercard").fadeOut(500,function(){});
 	}
 }
 
@@ -788,48 +793,76 @@ function genPlayerNewCycle(player,mark,life)
 }
 
 function endGameDisplay(players, scores, flag) {
- 		var article = $("#endGameModal article").empty();
+ 		var table = $("#endGameModal article table tbody").empty();
 
 			
 		if (flag)
 		{
 			$(".cs").addClass("hide");
 			$(".endGame").addClass("hide");
+			$("#endGameHead").text("End Game");
+			$("#endGameExtra").removeClass("hide");
 		}
 		else
 		{
 			$(".cs").removeClass("hide");
+			$("#endGameHead").text("End Game");
+			$("#endGameExtra").addClass("hide");
 		//	$(".endGame").removeClass("hide");
 		}
 		if (flag && players[0]==playerId)
 		{
 			$(".cont").removeClass("hide");
 			$(".endGame").removeClass("hide");
+			$("#endGameExtra").addClass("hide");
+
 		}
 		else
 		{
 			$(".cont").addClass("hide");
 			$(".endGame").addClass("hide");
 		}
+
  		for(var i in players) {
  			var player = players[i];
  			var score = scores[i];
  
- 			var row = $('<div />', {
- 				class: 'row'
- 			});
+ 			// var row = $('<div />', {
+ 			// 	class: 'row'
+ 			// });
+
+ 			// var playerDiv = $('<div />', {
+ 			// 	class: 'column_3',
+ 			// 	html: '<img src="images/user.gif" /><p id="playerName" class="text center">'+player+'</p>'
+ 			// }).appendTo(row);
  
- 			$('<div />', {
- 				class: 'column_3',
+ 			// $('<div />', {
+ 			// 	class: 'column_3',
+ 			// 	html: '<h1 class="color theme text center">'+score+'</h1>'
+ 			// }).appendTo(row);
+
+			var row = $('<tr />');
+ 
+ 			var playerDiv = $('<td />', {
  				html: '<img src="images/user.gif" /><p id="playerName" class="text center">'+player+'</p>'
  			}).appendTo(row);
  
- 			$('<div />', {
- 				class: 'column_3',
+ 			$('<td />', {
  				html: '<h1 class="color theme text center">'+score+'</h1>'
  			}).appendTo(row);
  
- 			article.append(row);
+ 			table.append(row);
+
+ 			var loadPlayer = function() {
+ 				var div = playerDiv;
+
+ 				return (function(name, picture) {
+ 					div.find('img').attr('src', picture);
+ 					div.find('p').text(name);
+ 				});
+ 			}
+
+ 			loadPlayerInfoFromFb(player, loadPlayer());
  		}
 		
 		TukTuk.Modal.show('endGameModal');
@@ -861,12 +894,13 @@ function destoryGame()
 		spectate=false;
 		//When return button is clicked
 	$(".life").empty();
-	$("userPlayer>.weathercard").empty();
+	$("#userPlayer>.weathercard").empty();
 	 $(".hand>.row1").empty();
 	 $(".pos1").remove();
 	 $(".pos2").remove();
 	 $(".pos3").remove();
-	 $(".pos4").remove();	
+	 $(".pos4").remove();
+	 $("#userPlayer>.myprofile").empty();	
 	 	 $("#GamePlaying").addClass("hide");
 		refreshGameRoomList();
 	$("#main").removeClass("hide");
