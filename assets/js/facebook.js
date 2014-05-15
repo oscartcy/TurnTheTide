@@ -177,7 +177,7 @@ function renderFriendList() {
 	console.log('firend list: ', fbUserInfo.friends);
 
 	var friends = fbUserInfo.friends;
-	var rank_table = $("#rank_table");
+	var rank_table = $("#rank_table").empty();;
 
 	for(var i in friends) {
 		var friend = friends[i];

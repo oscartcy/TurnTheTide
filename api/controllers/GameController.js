@@ -200,6 +200,36 @@ module.exports = {
 						//save result to user record
 					
 						setTimeout(callbackDick, 9000);	
+
+						for (var i=0;i<room.playerPos.length;i++) {
+							User.findOneByFbid(room.playerPos[i]).done(updateUser());
+
+							function updateUser() {
+								var cnt = i;
+
+								return (function(err, user) {
+									if(err)
+										console.log('disconnect find user error: ', err);
+
+									user.status = 'online';
+									user.score += result[cnt].mark;
+
+									user.save(function(err) {
+										if(err)
+											console.log(err);
+
+										//emit logout message to your friends
+										var sockets = GameRoom.subscribers();
+										for(var i in sockets) {
+										//	console.log(user.fbid+" has logged out");
+										var temp_socket = sockets[i];
+										temp_socket.emit('user_logout', {});
+									}
+								});
+								});
+							}
+						}
+
 						GameRoom.findOne(room.gameRoomId).done(destroyRoom);
 						
 						room.destroy(function(err) {
@@ -319,6 +349,7 @@ module.exports = {
 			{
 				//destroy room
 				//save result to user model
+				var players=JSON.parse(room.players);
 				
 				GameRoom.findOne(room.gameRoomId).done(destroyRoom);
 				var channel=room.gameRoomId;
@@ -326,26 +357,34 @@ module.exports = {
 							if(err) {
 								console.log(err);
 					}});	
-for (var i=0;i<room.playerPos.length;i++)				
-    User.findOneByFbid(room.playerPos[i]).done(function(err, user) {
-        if(err)
-          console.log('disconnect find user error: ', err);
+				for (var i=0;i<room.playerPos.length;i++) {
+					User.findOneByFbid(room.playerPos[i]).done(updateUser());
 
-        user.status = 'online';
-		
-        user.save(function(err) {
-          if(err)
-            console.log(err);
-		
-			//emit logout message to your friends
-			var sockets = GameRoom.subscribers();
-			for(var i in sockets) {
-			//	console.log(user.fbid+" has logged out");
-				var temp_socket = sockets[i];
-				temp_socket.emit('user_logout', {});
-			}
-		});
-      });
+					function updateUser() {
+						var cnt = i;
+
+						return (function(err, user) {
+							if(err)
+								console.log('disconnect find user error: ', err);
+
+							user.status = 'online';
+							user.score += players[cnt].Mark;
+
+							user.save(function(err) {
+								if(err)
+									console.log(err);
+
+										//emit logout message to your friends
+										var sockets = GameRoom.subscribers();
+										for(var i in sockets) {
+										//	console.log(user.fbid+" has logged out");
+										var temp_socket = sockets[i];
+										temp_socket.emit('user_logout', {});
+									}
+								});
+						});
+					}
+				}
 				
 				function destroyRoom(err,gameroom)
 				{
@@ -483,7 +522,7 @@ function randomCard(otherPlayer)
 function checkEndCycle(room)
 {
 //ori=13
-	if (room.round==3 || room.alive<=2)
+	if (room.round==13 || room.alive<=2)
 	{
 		return true;
 	}

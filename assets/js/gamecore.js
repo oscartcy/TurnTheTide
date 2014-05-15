@@ -1,5 +1,7 @@
 function setUpGame(info)
 {
+	$(".hand>.myrow").css("width", 780);
+	
 	gameID=info.id;
 	$("#main").addClass("hide");
 	TukTuk.Modal.hide();
