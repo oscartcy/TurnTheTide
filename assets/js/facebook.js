@@ -176,6 +176,8 @@ var fbUserInfo = {};
 function renderFriendList() {
 	console.log('firend list: ', fbUserInfo.friends);
 
+    updateMyScore();
+
 	var friends = fbUserInfo.friends;
 	var rank_table = $("#rank_table").empty();;
 
@@ -257,4 +259,19 @@ function renderFriendList() {
 			});
 		}
 	}
+}
+
+function updateMyScore() {
+    socket.post('/User/show',
+    {
+        fbid: playerId
+    },
+    update()
+    );
+
+    function update(res) {
+        var user = res.user;
+
+        $("#userScore").text("Socre: " + user.score);
+    }
 }

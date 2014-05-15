@@ -1,7 +1,7 @@
 function setUpGame(info)
 {
 	$(".hand>.myrow").css("width", 780);
-	
+
 	gameID=info.id;
 	$("#main").addClass("hide");
 	TukTuk.Modal.hide();
@@ -676,7 +676,7 @@ function setRound(round,player)
 		if ($("#"+player[i]+">.weathercard").length!=0 && !$("#"+player[i]+">.weathercard>.weathercard").hasClass('grayscale'))
 		{
 			$("#"+player[i]+">.weathercard").children().fadeOut(500, function() {
-	    		$$("#"+player[i]+">.weathercard").empty();
+	    		$("#"+player[i]+">.weathercard").empty();
 			});
 		}	
 		//$("#"+player[i]+">.weathercard").empty();
@@ -893,18 +893,19 @@ function rotate(back,front)
 
 function destoryGame()
 {
-		spectate=false;
-		//When return button is clicked
+	spectate=false;
+	//When return button is clicked
 	$(".life").empty();
 	$("#userPlayer>.weathercard").empty();
-	 $(".hand>.row1").empty();
-	 $(".pos1").remove();
-	 $(".pos2").remove();
-	 $(".pos3").remove();
-	 $(".pos4").remove();
-	 $("#userPlayer>.myprofile").empty();	
-	 	 $("#GamePlaying").addClass("hide");
-		refreshGameRoomList();
+	$(".hand>.row1").empty();
+	$(".pos1").remove();
+	$(".pos2").remove();
+	$(".pos3").remove();
+	$(".pos4").remove();
+	$("#userPlayer>.myprofile").empty();	
+	$("#GamePlaying").addClass("hide");
+	refreshGameRoomList();
+	renderFriendList();
 	$("#main").removeClass("hide");
 	
 }
