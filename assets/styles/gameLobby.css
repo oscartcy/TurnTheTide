@@ -10,12 +10,61 @@
 	color:#FF9933;
 }
 
+#title_div{
+	position:relative;
+	z-index:1;
+	width: 228px;
+	height: 25px;
+}
+
+#title_div img{
+	width:100%;
+	height:100%;
+}
+
+.info_col{
+	position:absolute;
+	z-index:0;
+	width:228px;
+	height:400px;
+	background-image: url(/images/turn_the_tide.jpg);
+	background-size:800px 600px;
+	background-repeat:no-repeat;
+	background-position:initial;
+	opacity:0.1;
+}
+
+.gameroom_col{
+	position:absolute;
+	z-index:0;
+	width:484px;
+	height:400px;
+	background-image: url(/images/turn_the_tide.jpg);
+	background-size:800px 600px;
+	background-repeat:no-repeat;
+	background-position:-250px 0px;
+	opacity:0.1;
+}
+
+.fd_list_col{
+	position:absolute;
+	z-index:0;
+	width:740px;
+	height:110px;
+	background-image: url(/images/turn_the_tide.jpg);
+	background-size:800px 600px;
+	background-repeat:no-repeat;
+	background-position:0px -420px;
+	opacity:0.1;
+}
+
 .pro_file_div{
 	position:relative;
 	width:150px;
 	height:150px;
 	bottom:9px;
 	left:39px;
+	z-index:1;
 }
 
 .pro_pic{
@@ -24,19 +73,34 @@
 }
 
 .pro_name{
+	width:100%;
 	position:relative;
-	float:left;
-	left:50px;
+	z-index:1;
+	left:-15px;
 }
+
+.Three_Dee{
+font-family: 'Comic Sans MS', cursive;
+line-height: 1em;
+color: #8f8d9e;
+font-weight:bold;
+font-size: 25px;
+text-shadow:0px 0px 0 rgb(123,121,138),1px 1px 0 rgb(114,112,129),2px 2px 0 rgb(104,102,119),3px 3px 0 rgb(94,92,109),4px 4px 0 rgb(85,83,100),5px 5px 0 rgb(75,73,90),6px 6px 0 rgb(65,63,80),7px 7px 0 rgb(56,54,71),8px 8px 0 rgb(46,44,61), 9px 9px 0 rgb(36,34,51),10px 10px 9px rgba(0,0,0,0.6),10px 10px 1px rgba(0,0,0,0.5),0px 0px 9px rgba(0,0,0,.2);}
 
 .score_div{
 	position:relative;
 	left:10px;
 }
 
+.info_btn_gp{
+	z-index:1;
+	height:408px;
+}
+
 .match_btn{
 	position:relative;
-	left:75px;
+	left:51px;
+	width:132px;
 }
 
 .cre_rm_btn{
@@ -44,9 +108,16 @@
 	left:51px;
 }
 
-.spec_btn_move{
+.join_btn{
+	width:91px;
+	height:33px;
+}
+
+.spec_btn{
 	position:relative;
 	top:7px;
+	width:91px;
+	height:33px;
 }
 
 #gameRoomList{
@@ -155,12 +226,12 @@
 
 #searchbox{
 	position:relative;
-	background-color: #eaf8fc;
+	/*background-color: #eaf8fc;
 	background-image: linear-gradient(#fff, #d4e8ec);
 	border-radius: 35px;    
 	border-width: 1px;
 	border-style: solid;
-	border-color: #c4d9df #a4c3ca #83afb7;            
+	border-color: #c4d9df #a4c3ca #83afb7;   */         
 	width: 484px;
 	height: 50px;
 	padding: 10px;

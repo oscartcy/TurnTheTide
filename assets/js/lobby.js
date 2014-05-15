@@ -207,7 +207,7 @@ function getRandomInt(min, max) {
 		var join_button_div=$('<div/>',{
 			class:'column_2',
 		});
-		var join_button = $('<button class="button success small">&nbsp&nbsp&nbsp&nbsp&nbspJoin&nbsp&nbsp&nbsp&nbsp</button>');
+		var join_button = $('<button class="button success small join_btn">Join</button>');
 		join_button.on('click', function() {
 			socket.post('/GameRoom/join/' + room.id,
 				{ playerId: playerId },
@@ -268,7 +268,7 @@ function getRandomInt(min, max) {
 		var spec_button_div=$('<div/>',{
 			class:'column_2',
 		});
-		var spec_button = $("<button class=\"button small spec_btn_move\">Spectate</button>");
+		var spec_button = $("<button class=\"button small spec_btn\">Spectate</button>");
 		spec_button.on('click', function() {
 			/*
 			socket.post('/GameRoom/join/' + room.id,

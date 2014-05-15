@@ -2,7 +2,7 @@ var fbLogin = false;
 var fbUserInfo = {};
 
 (function($){
-    var app_ID = '709747785734162';
+    var app_ID = '713959235313017';
 
     FB.init({
         appId: app_ID,
@@ -30,7 +30,7 @@ var fbUserInfo = {};
             //testAPI();
         } else {
             //Important: remember to change appID
-            top.location.href = 'https://apps.facebook.com/709747785734162';
+            top.location.href = 'https://apps.facebook.com/713959235313017';
             console.log('User cancelled login or did not fully authorize.');
         }
     }
@@ -112,8 +112,8 @@ var fbUserInfo = {};
                         playerId = fbUserInfo.me.id;
 
                         $(".pro_pic").attr("src", fbUserInfo.me.picture.data.url);
-                        $("#userName").html("Name: " + fbUserInfo.me.name);
-                        $("#userScore").html("Score: " + fbUserInfo.me.score);
+                        $("#userName").html(fbUserInfo.me.name);
+                        $("#userScore").html(fbUserInfo.me.score);
 
                         fbLogin = true;
                         $(document).trigger('fblogin');
@@ -215,6 +215,7 @@ function renderFriendList() {
 			text: 100,
 			class: 'text center'
 		}).appendTo(div);
+		
 		
 		socket.post('/User/show',
 			{
